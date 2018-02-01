@@ -294,11 +294,11 @@
 					}
 					
 					// Created by
-					$lookup = new class_access_lookup;
+					//$lookup = new class_access_lookup;
 				
 					if($_obj_data_main->get_log_create_by())
 					{
-						$lookup->lookup($_obj_data_main->get_log_create_by());
+						//$lookup->lookup($_obj_data_main->get_log_create_by());
 					}									
 			?>
           
@@ -326,7 +326,7 @@
                     
                     <tr>
                         <th>Created By</th>                                   
-                        <td><?php echo $lookup->get_account_data()->name_proper(); ?></td>
+                        <td><?php echo $_obj_data_main->get_log_create_by(); //$lookup->get_account_data()->name_proper(); ?></td>
                     </tr>
                     
                     <tr>
@@ -338,13 +338,13 @@
 						// Update by					
 						if($_obj_data_main->get_log_update_by())
 						{
-							$lookup->lookup($_obj_data_main->get_log_update_by());
+							//$lookup->lookup($_obj_data_main->get_log_update_by());
 						}
 					?>
                     
                     <tr>
                         <th>Last Update By</th>                                   
-                        <td><?php echo $lookup->get_account_data()->name_proper(); ?></td>
+                        <td><?php echo $_obj_data_main->get_log_create_by(); //$lookup->get_account_data()->name_proper(); ?></td>
                     </tr>
                     
                 </tbody>                        
