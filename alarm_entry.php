@@ -218,7 +218,7 @@
 				$dialog .= '<p class="alert alert-success">Your incident report was successfully entered. You may enter another report below or leave this page.</p>';
 			
 				// Set up and send email alert.
-				$address  = 'dvcask2@uky.edu, kjcoom0@email.uky.edu, jdel222@uky.edu, jwmonr1@email.uky.edu, richard.peddicord@ky.gov, ggwill2@email.uky.edu, seberr0@email.uky.edu, pjmerr0@email.uky.edu, tross@email.uky.edu, firereport@email.uky.edu, ppdUKPDFireAlarmResponse@email.uky.edu, trmatl2@uky.edu, ska248@uky.edu, lljayn0@uky.edu, jgba224@uky.edu, lee.poore@uky.edu';
+				$address  = 'dvcask2@uky.edu, kjcoom0@email.uky.edu, jdel222@uky.edu, jwmonr1@email.uky.edu, richard.peddicord@ky.gov, ggwill2@email.uky.edu, seberr0@email.uky.edu, pjmerr0@email.uky.edu, tross@email.uky.edu, firereport@email.uky.edu, ppdUKPDFireAlarmResponse@email.uky.edu, trmatl2@uky.edu, ska248@uky.edu, jgba224@uky.edu, lee.poore@uky.edu';
 													
 				$subject = MAILING::SUBJECT;
 				$body = 'An incident has been created or updated. <a href="http://ehs.uky.edu/apps/flashpoint/alarm_list_detail.php?id='.$_main_data->get_id().'">Click here</a> to view details.';
