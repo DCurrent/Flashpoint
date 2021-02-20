@@ -5,16 +5,6 @@
 	
 	//$page_obj = new class_page_cache();
 	
-	
-	$access_obj_process = new \dc\access\process();
-	$access_obj_process->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
-	$access_obj_process->process_control();
-	
-	//Get and verify log in status.
-	$access_obj = new \dc\access\status();
-	$access_obj->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
-	$access_obj->verify();
-	
 	// Set up navigaiton.
 	$navigation_obj = new class_navigation();
 	$navigation_obj->generate_markup_nav();
@@ -110,7 +100,7 @@
                                 <input type="password" class="form-control" name="credential" id="credential" required>
                             </div>
                             
-                            <button type="submit" name="access_action" value="<?php echo \dc\access\ACTION::LOGIN; ?>" class="btn btn-default"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+                            <button type="submit" name="access_action" value="<?php echo \dc\stoeckl\ACTION::LOGIN; ?>" class="btn btn-default"><span class="glyphicon glyphicon-log-in"></span> Login</button>
                         </form>
             
                 <?php
@@ -121,13 +111,6 @@
             <?php echo $navigation_obj->get_markup_footer(); ?>
         </div><!--container-->        
     <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40196994-1', 'uky.edu');
-  ga('send', 'pageview');
 </script>
 </body>
 </html>
