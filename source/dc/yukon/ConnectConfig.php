@@ -17,12 +17,12 @@ interface iConnectConfig
 	function get_db_password();		// Return password.
 	
 	function set_charset($value);			// Charset type (example: UTF-8).
-	function set_db_type(string $value);	// Set database type.
+	function set_db_type($value);	// Set database type.
 	function set_error(Error $value);		// Set error handler.
 	function set_db_host($value);		// Set host name.
-	function set_db_name(string $value);		// Set logical database name.
-	function set_db_user(string $value);		// Set user.
-	function set_db_password(string $value);	// Set password.
+	function set_db_name($value);		// Set logical database name.
+	function set_db_user($value);		// Set user.
+	function set_db_password($value);	// Set password.
 }
 
 class ConnectConfig implements iConnectConfig
@@ -35,7 +35,7 @@ class ConnectConfig implements iConnectConfig
 	private	$user		= NULL;	// User name to access database.
 	private	$password	= NULL;	// Password for user to access database.
 	
-	public function __construct(string $config_file = NULL, Error $error = NULL)
+	public function __construct($config_file = NULL, Error $error = NULL)
 	{
 		// Populate defaults.
 		$this->db_type 	= DEFAULTS::DB_TYPE;
@@ -64,7 +64,7 @@ class ConnectConfig implements iConnectConfig
 		return $this->db_type;
 	}
 	
-	public function set_db_type(string $value)
+	public function set_db_type($value)
 	{		
 		$this->db_type = $this->db_type_string_to_const($value);
 	}
@@ -94,7 +94,7 @@ class ConnectConfig implements iConnectConfig
 		return $this->name;
 	}
 
-	public function set_db_name(string $value)
+	public function set_db_name($value)
 	{		
 		$this->name = $value;
 	}
@@ -104,7 +104,7 @@ class ConnectConfig implements iConnectConfig
 		return $this->password;
 	}
 
-	public function set_db_password(string $value)
+	public function set_db_password($value)
 	{		
 		$this->password = $value;
 	}
@@ -114,12 +114,12 @@ class ConnectConfig implements iConnectConfig
 		return $this->user;
 	}
 
-	public function set_db_user(string $value)
+	public function set_db_user($value)
 	{		
 		$this->user = $value;
 	}	
 	
-	private function db_type_string_to_const(string $value)
+	private function db_type_string_to_const($value)
 	{
 		if($value == "MSSQL")
 		{
@@ -167,7 +167,7 @@ class ConnectConfig implements iConnectConfig
 	* Config: user_name = "John Doe"
 	* Method: $this->set_user_name($value);
 	*/
-	public function populate_config(string $config_file)
+	public function populate_config($config_file)
 	{
 		/*
 		* If any part of this code fails we need to
