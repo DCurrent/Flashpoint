@@ -34,7 +34,7 @@ class SessionConfig implements iSessionConfig
 	private	$sp_get		= NULL;
 	private	$sp_set		= NULL;
 	
-	public function __construct(String $config_file = NULL)
+	public function __construct($config_file = NULL)
 	{
 		$this->life 		= DEFAULTS::LIFE;
 		$this->sp_prefix	= DEFAULTS::SP_PREFIX;
@@ -138,7 +138,7 @@ class SessionConfig implements iSessionConfig
 	* Config: user_name = "John Doe"
 	* Method: $this->set_user_name($value);
 	*/
-	public function populate_config(string $config_file)
+	public function populate_config($config_file)
 	{
 		/*
 		* If any part of this code fails we need to
