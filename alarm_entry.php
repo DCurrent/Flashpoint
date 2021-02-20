@@ -9,9 +9,8 @@
 	$dialog = NULL;
 	
 	// Page caching.
-	$page_obj = new class_page_cache();
-	ob_start();
-			
+	$page_obj = new \dc\Prudhoe\PageCache();
+				
 	// Main navigaiton.
 	$obj_navigation_main = new class_navigation();
 	$obj_navigation_main->generate_markup_nav_public();
