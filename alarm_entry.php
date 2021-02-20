@@ -448,6 +448,41 @@
                             </select> 
                         </div>                                   
                     </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="occupied">Building Occupied</label>
+                        <div class="col-sm-10">
+                            <!--Occupied: <?php echo $_main_data->get_occupied(); ?>-->
+                        
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" name="occupied" value="0" <?php if(!$_main_data->get_occupied()) echo ' checked ';?> required>No
+                                </label>
+                            
+                                <label class="radio-inline">
+                                    <input type="radio" name="occupied" value="1" <?php if($_main_data->get_occupied() == 1) echo ' checked ';?> required>Yes
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="evacuated">Building Evacuated</label>
+                        <div class="col-sm-10">
+                            <!--Occupied: <?php echo $_main_data->get_evacuated(); ?>-->
+                        
+                            <div>
+                                <label class="radio-inline">
+                                    <input type="radio" name="evacuated" value="0" <?php if(!$_main_data->get_evacuated()) echo ' checked ';?> required>No
+                                </label>
+                            
+                                <label class="radio-inline">
+                                    <input type="radio" name="evacuated" value="1" <?php if($_main_data->get_evacuated() == 1) echo ' checked ';?> required>Yes
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
               	</fieldset>                
                 
                 <fieldset id="fs_alarm">
@@ -542,39 +577,7 @@
             
                     
                     
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="occupied">Occupied</label>
-                        <div class="col-sm-10">
-                            <!--Occupied: <?php echo $_main_data->get_occupied(); ?>-->
-                        
-                            <div>
-                                <label class="radio-inline">
-                                    <input type="radio" name="occupied" value="0" <?php if(!$_main_data->get_occupied()) echo ' checked ';?> required>No
-                                </label>
-                            
-                                <label class="radio-inline">
-                                    <input type="radio" name="occupied" value="1" <?php if($_main_data->get_occupied() == 1) echo ' checked ';?> required>Yes
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                     
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="evacuated">Evacuated</label>
-                        <div class="col-sm-10">
-                            <!--Occupied: <?php echo $_main_data->get_evacuated(); ?>-->
-                        
-                            <div>
-                                <label class="radio-inline">
-                                    <input type="radio" name="evacuated" value="0" <?php if(!$_main_data->get_evacuated()) echo ' checked ';?> required>No
-                                </label>
-                            
-                                <label class="radio-inline">
-                                    <input type="radio" name="evacuated" value="1" <?php if($_main_data->get_evacuated() == 1) echo ' checked ';?> required>Yes
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                     
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="notified">Notified</label>
