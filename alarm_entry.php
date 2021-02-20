@@ -126,6 +126,7 @@
 													@report_device_sprinkler 	= ?,
 													@report_device_smoke 		= ?,
 													@report_device_stove		= ?,
+                                                    @report_device_911          = ?,
 													@cause			= ?,
 													@occupied		= ?,
 													@evacuated		= ?,
@@ -156,6 +157,7 @@
 						array($_main_data->get_report_device_sprinkler(),	SQLSRV_PARAM_IN),
 						array($_main_data->get_report_device_smoke(), 		SQLSRV_PARAM_IN),
 						array($_main_data->get_report_device_stove(),		SQLSRV_PARAM_IN),
+                        array($_main_data->get_report_device_911(),         SQLSRV_PARAM_IN),
 						array($_main_data->get_cause(),			SQLSRV_PARAM_IN),
 						array($_main_data->get_occupied(),		SQLSRV_PARAM_IN),
 						array($_main_data->get_evacuated(),		SQLSRV_PARAM_IN),
@@ -293,6 +295,8 @@
         
         <!-- jQuery library -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+        <script src="source/jquery_ui_timepicker_addon.js"></script>
         
         <!-- Latest compiled JavaScript -->
         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -311,6 +315,7 @@
         </script>
         <script src="../../libraries/javascript/options_update.js"></script>
     
+        
     	<style>
 			ul.checkbox  { 
 				
@@ -550,7 +555,7 @@
                                             id="report_device_sprinkler" 
                                             value="1" 
                                             type="checkbox" <?php if($_main_data->get_report_device_sprinkler() == TRUE) echo ' checked '; ?>>
-                                        <label for="report_device_sprinkler">Sprinkler</label>
+                                        <label for="report_device_sprinkler">Sprinkler Activation</label>
                                     </li>
                                     
                                     <li>
@@ -559,7 +564,7 @@
                                             id="report_device_smoke" 
                                             value="1" 
                                             type="checkbox" <?php if($_main_data->get_report_device_smoke() == TRUE) echo ' checked '; ?>>
-                                        <label for="report_device_smoke">Smoke Detector</label>
+                                        <label for="report_device_smoke">Smoke/Heat Detector</label>
                                     </li>
                                     
                                     <li>
@@ -568,8 +573,17 @@
                                             id="report_device_stove" 
                                             value="1" 
                                             type="checkbox" <?php if($_main_data->get_report_device_stove() == TRUE) echo ' checked '; ?>>
-                                        <label for="report_device_stove">Stove Suppression</label>
-                                    </li>                                  
+                                        <label for="report_device_stove">Alternate Suppression</label>
+                                    </li>
+                                    
+                                    <li>
+                                        <input 
+                                            name="report_device_911" 
+                                            id="report_device_911" 
+                                            value="1" 
+                                            type="checkbox" <?php if($_main_data->get_report_device_911() == TRUE) echo ' checked '; ?>>
+                                        <label for="report_device_911">911 Call</label>
+                                    </li>
                                 </ul>                                    
                             </fieldset>
                         </div>
@@ -773,6 +787,14 @@
 		options_update(event, null, '#building_code');
 	
 	});
+        
+    /*
+    * Date and time picker.
+    */
+    $(function(){
+                    $( '.date_time' ).datetimepicker({dateFormat: 'yy-mm-dd', timeFormat: 'HH:mm:ss', changeYear: true, constrainInput: true});
+                });
+       
 
 </script>
 
