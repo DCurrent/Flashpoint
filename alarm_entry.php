@@ -758,11 +758,13 @@
             <?php echo $obj_navigation_main->get_markup_footer(); ?>
         </div><!--container-->        
     <script>
-  $('.room_search').change(function(event){	
+  $('.room_search').change(function(event)
+    {	
 		options_update(event, null, '#room_code');	
 	});
   
-  $(document).ready(function(event){
+  $(document).ready(function(event)
+    {
     	$('[data-toggle="tooltip"]').tooltip();
 	
 		options_update(event, null, '#building_code');
