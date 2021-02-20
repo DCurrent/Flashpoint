@@ -17,7 +17,9 @@
 	//require_once($_SERVER['DOCUMENT_ROOT'].'/libraries/php/classes/url_query/main.php'); 	// URL builder (to include variables).
 
 	//require_once(__DIR__.'/time_list.php');
-		
+    
+    require_once(__DIR__.'/navigation.php');
+
 	/**
 	* Site specific configuration settings. File
 	* is located in PHP installation directory.
@@ -112,9 +114,19 @@
 
 	$dc_nahoni_session = new \dc\nahoni\Session($dc_nahoni_config);
 	session_set_save_handler($dc_nahoni_session, TRUE);
-	session_start();
+	session_start();	
+
+    $access_obj_process = new \dc\stoeckl\process();
+	$access_obj_process->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);
+	$access_obj_process->get_config()->set_use_local(FALSE);
+	$access_obj_process->process_control();
 	
-	$_SESSION['TEST_SES'] = 'Damon Caskey';	
+	//Get and verify log in status.
+	$access_obj = new \dc\stoeckl\status();
+	$access_obj->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
+	$access_obj->verify();
+
+    $_SESSION['TEST_SES'] = 'Damon Caskey';	
 	echo $_SESSION['TEST_SES'];
 
 ?>
