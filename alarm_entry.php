@@ -422,7 +422,7 @@
                                 data-current="<?php //echo $post->get_facility(); ?>" 
                                 data-source-url="../../libraries/inserts/facility.php" 
                                 data-extra-options='<option value="">Select Facility</option>'
-                                data-col_order="<?php echo 1; //FACILITY_COL_ORDER::ADDRESS_FIRST; ?>"
+                                data-col_order="<?php echo 2; //FACILITY_COL_ORDER::CODE_NAME_ADDRESS; ?>"
                                 data-grouped="1"
                                 class="room_search form-control">
                                     <!--This option is for valid HTML5; it is overwritten on load.--> 
@@ -598,7 +598,7 @@
                 	<legend>Incident</legend>
                     
                     	<div class="form-group">
-                            <label class="control-label col-sm-2" for="fire">Type of Inciden:</label>
+                            <label class="control-label col-sm-2" for="fire">Type of Incident</label>
                             <div class="col-sm-10">
                                 <!--Fire (type of incident): <?php echo $_main_data->get_fire(); ?>-->
                                 <div>
