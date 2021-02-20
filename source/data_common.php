@@ -182,7 +182,8 @@
 			$report_device_pull		= NULL,
 			$report_device_sprinkler	= NULL,
 			$report_device_smoke	= NULL,
-			$report_device_stove	= NULL,			
+			$report_device_stove	= NULL,	
+            $report_device_911      = NULL,
 			$cause				= NULL,
 			$occupied			= NULL,
 			$evacuated			= NULL,
@@ -268,6 +269,11 @@
 		public function get_report_device_stove()
 		{
 			return $this->report_device_stove;
+		}
+        
+        public function get_report_device_911()
+		{
+			return $this->report_device_911;
 		}
 		
 		public function get_cause()
@@ -406,6 +412,11 @@
 		public function set_report_device_stove($value)
 		{
 			$this->report_device_stove = $value;
+		}
+        
+        public function set_report_device_911($value)
+		{
+			$this->report_device_911 = $value;
 		}
 		
 		public function set_cause($value)
