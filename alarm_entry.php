@@ -44,25 +44,25 @@
 	{		
 	
 		default:		
-		case RECORD_NAV_COMMANDS::NEW_BLANK:
+		case dc\record_navigation\RECORD_NAV_COMMANDS::NEW_BLANK:
 		
 			//$_main_data->set_account($access_obj->get_account());
 			$_main_data->set_status(1);
 			break;
 			
-		case RECORD_NAV_COMMANDS::NEW_COPY:			
+		case dc\record_navigation\RECORD_NAV_COMMANDS::NEW_COPY:			
 			
 			// Populate the object from post values.			
 			$_main_data->populate_from_request();			
 			break;
 			
-		case RECORD_NAV_COMMANDS::LISTING:
+		case dc\record_navigation\RECORD_NAV_COMMANDS::LISTING:
 			
 			// Direct to listing.				
 			header('Location: alarm_list.php');
 			break;
 			
-		case RECORD_NAV_COMMANDS::DELETE:						
+		case dc\record_navigation\RECORD_NAV_COMMANDS::DELETE:						
 			
 			// Populate the object from post values.			
 			$_main_data->populate_from_request();
@@ -78,10 +78,10 @@
 				
 			break;				
 					
-		case RECORD_NAV_COMMANDS::SAVE:
+		case dc\record_navigation\RECORD_NAV_COMMANDS::SAVE:
 			
 			// Stop errors in case someone tries a direct command link.
-			if($obj_navigation_rec->get_command() != RECORD_NAV_COMMANDS::SAVE) break;
+			if($obj_navigation_rec->get_command() != dc\record_navigation\RECORD_NAV_COMMANDS::SAVE) break;
 			
 			$file_name = NULL;
 			
@@ -347,7 +347,7 @@
 				<?php //echo $obj_navigation_rec->get_markup(); ?>         
           
           		<?php
-					$lookup = new \dc\access\status;
+					$lookup = new \dc\stoeckl\status;
 				
 					if($_main_data->get_log_update_by())
 					{
