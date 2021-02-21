@@ -35,7 +35,7 @@
 	// data for any of the navigation queries to find, we are making new
 	// records, or copies of records. It also has the side effect of enabling 
 	// IDE type hinting.
-	$_main_data = new class_fire_alarm_data();
+	$_main_data = new data_fire_alarm();
 		
 	// Ensure the main data ID member is same as navigation object ID.
 	$_main_data->set_id($obj_navigation_rec->get_id());
