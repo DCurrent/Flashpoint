@@ -2,7 +2,7 @@
 
 	require_once(__DIR__.'/main.php');
 
-	class class_navigation
+	class Navigation
 	{
 		const DIRECTORY_PRIME = '/apps/flashpoint';
 		
