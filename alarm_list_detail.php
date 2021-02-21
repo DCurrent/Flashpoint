@@ -134,7 +134,7 @@
 	$query = new class_db_query($db);
 	
 	// Record navigation.
-	$obj_navigation_rec = new class_record_nav();
+	$obj_navigation_rec = new Navigation();
 	
 	$query->set_sql('{call fire_alarm_detail(@id = ?,														 
 								@sort_field 	= ?,

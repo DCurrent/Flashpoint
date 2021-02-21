@@ -12,7 +12,7 @@
 	$page_obj = new \dc\Prudhoe\PageCache();
 				
 	// Main navigaiton.
-	$obj_navigation_main = new class_navigation();
+	$obj_navigation_main = new Navigation();
 	$obj_navigation_main->generate_markup_nav_public();
 	$obj_navigation_main->generate_markup_footer();	
 				
@@ -24,10 +24,10 @@
 	$query = new class_db_query($db);		
 			
 	// Record navigation.
-	$obj_navigation_rec = new class_record_nav();	
+	$obj_navigation_rec = new dc\record_navigation\RecordMenu();	
 	
 	// Prepare redirect url with variables.
-	$url_query	= new url_query;
+	$url_query	= new dc\fraser\URLFix();
 	$url_query->set_data('action', $obj_navigation_rec->get_action());
 	$url_query->set_data('id', $obj_navigation_rec->get_id());
 	

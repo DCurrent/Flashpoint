@@ -23,7 +23,7 @@
 	$query = new class_db_query($db);		
 			
 	// Record navigation.
-	$obj_navigation_rec = new class_record_nav();	
+	$obj_navigation_rec = new Navigation();	
 	
 	// Prepare redirect url with variables.
 	$url_query	= new url_query;
