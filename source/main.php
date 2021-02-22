@@ -116,17 +116,6 @@
 	session_set_save_handler($dc_nahoni_session, TRUE);
 	session_start();	
 
-    $access_obj_process = new \dc\stoeckl\process();
-	$access_obj_process->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);
-	$access_obj_process->get_config()->set_use_local(FALSE);
-	$access_obj_process->process_control();
-	
-	//Get and verify log in status.
-	$access_obj = new \dc\stoeckl\status();
-	$access_obj->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
-	$access_obj->verify();
-
-    $_SESSION['TEST_SES'] = 'Damon Caskey';	
-	echo $_SESSION['TEST_SES'];
+    
 
 ?>

@@ -1,43 +1,50 @@
 <?php 
 	
 	
-	
-	// Just to avoid lots of retpying.
-	
 	require(__DIR__.'/source/main.php');
-	
+	 
+
 	$dialog = NULL;
 	
-	// Page caching.
+	/* Page caching. */
 	$page_obj = new \dc\Prudhoe\PageCache();
+
+    /* 
+    * Set up access control, then get and verify 
+    * log in status. Needs fix now.
+	*/
+    $access_obj_process = new \dc\stoeckl\process();
+	$access_obj_process->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);
+	$access_obj_process->get_config()->set_use_local(FALSE);
+	$access_obj_process->process_control();
+		
+    $access_obj = new \dc\stoeckl\status();
+	$access_obj->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
+	$access_obj->verify();    
+    $access_obj->action();
 				
-	// Main navigaiton.
+	/* Main navigaiton. */
 	$obj_navigation_main = new Navigation();
 	$obj_navigation_main->generate_markup_nav_public();
 	$obj_navigation_main->generate_markup_footer();	
 				
-	// Set up database.
-	$db_conn_set = new class_db_connect_params();
-	$db_conn_set->set_name(DATABASE::NAME);
-	
-	$db = new class_db_connection($db_conn_set);
-	$query = new class_db_query($db);		
-			
-	// Record navigation.
+	/* Record navigation. */
 	$obj_navigation_rec = new dc\record_navigation\RecordMenu();	
 	
-	// Prepare redirect url with variables.
+	/* Prepare redirect url with variables. */
 	$url_query	= new dc\fraser\URLFix();
 	$url_query->set_data('action', $obj_navigation_rec->get_action());
 	$url_query->set_data('id', $obj_navigation_rec->get_id());
 	
-	// Initialize our data objects. This is just in case there is no table
-	// data for any of the navigation queries to find, we are making new
-	// records, or copies of records. It also has the side effect of enabling 
-	// IDE type hinting.
-	$_main_data = new data_fire_alarm();
+	/* 
+    * Initialize our data objects. This is just in case there is no table
+	* data for any of the navigation queries to find, we are making new
+	* records, or copies of records. It also has the side effect of enabling 
+	* IDE type hinting.
+	*/
+    $_main_data = new data_fire_alarm();
 		
-	// Ensure the main data ID member is same as navigation object ID.
+	/* Ensure the main data ID member is same as navigation object ID. */
 	$_main_data->set_id($obj_navigation_rec->get_id());
 			
 	switch($obj_navigation_rec->get_action())
@@ -46,61 +53,62 @@
 		default:		
 		case dc\record_navigation\RECORD_NAV_COMMANDS::NEW_BLANK:
 		
-			//$_main_data->set_account($access_obj->get_account());
 			$_main_data->set_status(1);
 			break;
 			
 		case dc\record_navigation\RECORD_NAV_COMMANDS::NEW_COPY:			
 			
-			// Populate the object from post values.			
+			/* Populate the object from post values. */
 			$_main_data->populate_from_request();			
 			break;
 			
 		case dc\record_navigation\RECORD_NAV_COMMANDS::LISTING:
 			
-			// Direct to listing.				
+			/* Direct to listing. */				
 			header('Location: alarm_list.php');
 			break;
 			
 		case dc\record_navigation\RECORD_NAV_COMMANDS::DELETE:						
 			
-			// Populate the object from post values.			
+			/* Populate the object from post values. */
 			$_main_data->populate_from_request();
 				
-			// Call and execute delete SP.
+			/* Call and execute delete SP. */
 			$query->set_sql('{call fire_alarm_delete(@id = ?)}');			
 			
 			$query->set_params(array(array($_main_data->get_id(), SQLSRV_PARAM_IN)));
 			$query->query();
 			
-			// Refrsh page to the previous record.				
+			/* Refrsh page to the previous record. */
 			header('Location: '.$_SERVER['PHP_SELF']);			
 				
 			break;				
 					
 		case dc\record_navigation\RECORD_NAV_COMMANDS::SAVE:
 			
-			// Stop errors in case someone tries a direct command link.
+			/* Stop errors in case someone tries a direct command link. */
 			if($obj_navigation_rec->get_command() != dc\record_navigation\RECORD_NAV_COMMANDS::SAVE) break;
 			
 			$file_name = NULL;
 			
-			// Save the record. Saving main record is straight forward. We’ll run the populate method on our 
-			// main data object which will gather up post values. Then we can run a query to merge the values into 
-			// database table. We’ll then get the id from saved record (since we are using a surrogate key, the ID
-			// should remain static unless this is a brand new record). 
-			
-			// If necessary we will then save any sub records (see each for details).
-			
-			// Finally, we redirect to the current page using the freshly acquired id. That will ensure we have 
-			// always an up to date ID for our forms and navigation system.			
-		
-			// Populate the object from post values.			
+			/* 
+            * Save the record. Saving main record is straight forward. We’ll run the populate method on our 
+			* main data object which will gather up post values. Then we can run a query to merge the values into 
+			* database table. We’ll then get the id from saved record (since we are using a surrogate key, the ID
+			* should remain static unless this is a brand new record). 
+			*
+			* If necessary we will then save any sub records (see each for details).
+			*
+			* Finally, we redirect to the current page using the freshly acquired id. That will ensure we have 
+			* always an up to date ID for our forms and navigation system.			
+		    */
+            
+			/* Populate the object from post values. */
 			$_main_data->populate_from_request();
 			
 			$_main_data_label = $_main_data->get_label(); 
 		
-			// Call update stored procedure.
+			/* Call update stored procedure. */
 			$query->set_sql('{call fire_alarm_update(@id 			= ?,														 
 													@label 			= ?,
 													@details 		= ?,
@@ -164,7 +172,7 @@
 			
 			//var_dump($params);
 			
-			// Let's do some validation before we execute the query.
+			/* Let's do some validation before we execute the query. */
 			$dialog = NULL;
 			$valid	= TRUE;
 			
@@ -198,7 +206,7 @@
 				$dialog .= '<p class="alert alert-danger">You must include the location. Please select a facility and area.</p>';
 			}
 			
-			// Did all data verify?
+			/* Did all data verify? */
 			if($valid === TRUE)
 			{
 				$query->set_params($params);			
@@ -209,8 +217,11 @@
 				
 				$dialog .= '<p class="alert alert-success">Your incident report was successfully entered. You may enter another report below or leave this page.</p>';
 			
-				// Set up and send email alert.
-				$address  = 'dvcask2@uky.edu, kjcoom0@email.uky.edu, jdel222@uky.edu, jwmonr1@email.uky.edu, richard.peddicord@ky.gov, ggwill2@email.uky.edu, seberr0@email.uky.edu, pjmerr0@email.uky.edu, tross@email.uky.edu, rob.turner@uky.edu, ska248@uky.edu, lee.poore@uky.edu';
+				/* 
+                * Set up and send an email alert.
+				*/
+                
+                $address  = 'dvcask2@uky.edu, kjcoom0@email.uky.edu, jdel222@uky.edu, jwmonr1@email.uky.edu, richard.peddicord@ky.gov, ggwill2@email.uky.edu, seberr0@email.uky.edu, pjmerr0@email.uky.edu, tross@email.uky.edu, rob.turner@uky.edu, ska248@uky.edu, lee.poore@uky.edu';
 													
 				$subject = MAILING::SUBJECT;
 				$body = 'An incident has been created or updated. <a href="http://ehs.uky.edu/apps/flashpoint/alarm_list_detail.php?id='.$_main_data->get_id().'">Click here</a> to view details.';
@@ -221,8 +232,7 @@
 				if(MAILING::FROM)	$headers[] = "From: ".MAILING::FROM;
 				if(MAILING::BCC)	$headers[] = "Bcc: ".MAILING::BCC;
 				if(MAILING::CC) 	$headers[] = "Cc: ".MAILING::CC;	
-				
-				// Run mail function.
+
 				mail($address, MAILING::SUBJECT.' - Incident Alert', $body, implode("\r\n", $headers));
 			}
 			
@@ -230,8 +240,11 @@
 	}
 		
 	
-	// Datalist list generation.
-	// Cause.
+	/* 
+    * Datalist list generation.
+	*/
+
+    /* Cause */
 	$_obj_data_list_cause_list = NULL;
 	
 	$query->set_sql('{call fire_alarm_cause_list}');
@@ -239,11 +252,9 @@
 	$query->query();
 	$query->get_line_params()->set_class_name('class_common_data');
 	
-	// Populate data object array with results, or a single object if no
-	// rows were found.
 	$_obj_data_list_cause_list = $query->get_line_object_list();
 	
-	// Party.
+	/* Party. */
 	$_obj_data_list_party_list = NULL;
 	
 	$query->set_sql('{call fire_alarm_party_list}');
@@ -251,11 +262,9 @@
 	$query->query();
 	$query->get_line_params()->set_class_name('class_common_data');
 	
-	// Populate data object array with results, or a single object if no
-	// rows were found.
 	$_obj_data_list_party_list = $query->get_line_object_list();
 	
-	// Type.
+	/* Type. */
 	$_obj_data_list_type_list = NULL;
 	
 	$query->set_sql('{call fire_alarm_type_list}');
@@ -263,11 +272,9 @@
 	$query->query();
 	$query->get_line_params()->set_class_name('class_common_data');
 	
-	// Populate data object array with results, or a single object if no
-	// rows were found.
 	$_obj_data_list_type_list = $query->get_line_object_list();	
 	
-	// Generate buttons.
+	/* Generate navigation buttons. */
 	$obj_navigation_rec->generate_button_list();
 	
 ?>
@@ -279,7 +286,7 @@
         <title><?php echo APPLICATION_SETTINGS::NAME; ?>, Alarm Entry</title>        
         
          <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
         
@@ -348,7 +355,7 @@
           
           		<?php
 					$lookup = new \dc\stoeckl\status;
-				
+				echo $_main_data->get_log_update_by();
 					if($_main_data->get_log_update_by())
 					{
 						//$lookup->lookup($_main_data->get_log_update_by());
@@ -357,7 +364,7 @@
 					{
 						//$lookup->lookup($access_obj->get_account());
 					}
-				?>         		
+                ?>         		
           
           		<div class="form-group">
                 	<label class="control-label col-sm-2" for="account_dsp">Created by</label>
@@ -792,7 +799,7 @@
 </html>
 
 <?php
-	// Collect and output page markup.
-	$page_obj->markup_from_cache();	
+	/* Collect and output page markup. */
+	$page_obj->markup_and_flush();	
 	$page_obj->output_markup();
 ?>

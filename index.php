@@ -3,12 +3,26 @@
 	
 	require(__DIR__.'/source/main.php');
 	
-	//$page_obj = new class_page_cache();
-	
-	// Set up navigaiton.
-	$navigation_obj = new class_navigation();
-	$navigation_obj->generate_markup_nav();
-	$navigation_obj->generate_markup_footer();
+	/* Page caching. */
+	$page_obj = new \dc\Prudhoe\PageCache();
+
+    /* 
+    * Set up access control, then get and verify 
+    * log in status. Needs fix now.
+	*/
+    $access_obj_process = new \dc\stoeckl\process();
+	$access_obj_process->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);
+	$access_obj_process->get_config()->set_use_local(FALSE);
+	$access_obj_process->process_control();
+		
+    $access_obj = new \dc\stoeckl\status();
+	$access_obj->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
+	$access_obj->verify();
+
+	/* Main navigaiton. */
+	$obj_navigation_main = new Navigation();
+	$obj_navigation_main->generate_markup_nav_public();
+	$obj_navigation_main->generate_markup_footer();	
 	
 ?>
 
@@ -19,7 +33,7 @@
         <title><?php echo APPLICATION_SETTINGS::NAME; ?></title>        
         
          <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
         
@@ -52,7 +66,7 @@
         </div>
     
         <div id="container" class="container">            
-            <?php echo $navigation_obj->get_markup_nav(); ?>                                                                                
+            <?php echo $obj_navigation_main->get_markup_nav(); ?>                                                                                
             <div class="page-header">
                 <h1><?php echo APPLICATION_SETTINGS::NAME; ?></h1>
                 <p>
@@ -108,7 +122,7 @@
 				?>
             </div> 
                     
-            <?php echo $navigation_obj->get_markup_footer(); ?>
+            <?php echo $obj_navigation_main->get_markup_footer(); ?>
         </div><!--container-->        
     <script>
 </script>
@@ -116,7 +130,7 @@
 </html>
 
 <?php
-	// Collect and output page markup.
-	//$page_obj->markup_from_cache();	
-	//$page_obj->output_markup();
+	/* Collect and output page markup. */
+	$page_obj->markup_and_flush();	
+	$page_obj->output_markup();
 ?>
