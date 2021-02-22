@@ -122,37 +122,46 @@
 			// Start output caching.
 			ob_start();
 		?>
-        
-            <nav class="navbar">
-                <div class="container-fluid">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#nav_main">
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>                        
-                        </button>
-                        <a class="navbar-brand" href="http://ehs.uky.edu/fire">University of Kentucky Fire Marshal</a>
-                    </div>
-                    <div class="collapse navbar-collapse" id="nav_main">                        
-                        <ul class="nav navbar-nav navbar-right">
-                        <?php
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+				<a class="navbar-brand" href="<?php echo $this->directory_prime; ?>"><?php //echo APPLICATION_SETTINGS::NAME; ?>University of Kentucky Fire Marshal</a>
+				
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav mr-auto">
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Fire &amp; Drill Reports
+							</a>
+							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+								<!--<a class="dropdown-item" href="#">Select an action</a>-->
+								<!--<div class="dropdown-divider"></div>-->
+								<a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/alarm_list.php">Alarm List</a>
+							</div>
+						</li>
+					</ul>
+					<div class="float-right">
+
+						<?php
 							if($this->access_obj->get_account())
 							{
 						?>
-                   		  <li><a href="<?php echo $this->access_obj->get_config()->get_authenticate_url(); ?>?access_action=<?php echo \dc\stoeckl\ACTION::LOGOFF; ?>"><span class="glyphicon glyphicon-log-out"></span> <?php echo $this->access_obj->name_full(); ?></a></li>
-                        <?php
+								<a href="<?php echo $this->access_obj->get_config()->get_authenticate_url(); ?>?access_action=<?php echo \dc\stoeckl\ACTION::LOGOFF; ?>"><span class="glyphicon glyphicon-log-out"></span> <?php echo $this->access_obj->name_full(); ?></a>
+						<?php
 							}
 							else
 							{
 						?>
-                        		<li><a href="<?php echo $this->access_obj->get_config()->get_authenticate_url(); ?>"><span class="glyphicon glyphicon-log-in"></span> Guest</a></li>
-                        <?php
+								<a href="<?php echo $this->access_obj->get_config()->get_authenticate_url(); ?>"><span class="glyphicon glyphicon-log-in"></span> Guest</a>
+						<?php
 							}
-						?>                   
-                        </ul>
-                    </div>
-                </div>
-            </nav>        	
+						?>
+					</div>
+				</div>				
+			</nav>                  	
         <?php
 			
 			// Collect contents from cache and then clean it.

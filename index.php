@@ -36,12 +36,6 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
-        
-        <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        
-        <!-- Latest compiled JavaScript -->
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     </head>
     
     <body>          
@@ -99,18 +93,18 @@
 					else
 					{
 				?>
-                		<p>Welcome to <?php echo APPLICATION_SETTINGS::NAME; ?>, a Fire Marshal services system for UK Environmental Health And Safety. In order to use <?php echo APPLICATION_SETTINGS::NAME; ?>, please log in using your <a href="#" data-toggle="modal" data-target="#help_link_blue">Link Blue</a> account and password.</p>
+                		<p>Welcome to <?php echo APPLICATION_SETTINGS::NAME; ?>, a Fire Marshal services system for UK Environmental Health And Safety. In order to use <?php echo APPLICATION_SETTINGS::NAME; ?>, please log in using your <a href="#" data-toggle="modal" data-target="#help_link_blue">Link Blue</a> account and password. Do not include the domain ("mc", "ad", or "@...") in your account name.</p>
             		
                     	<p><?php echo $access_obj->dialog(); ?></p>
                     	
                         <!--Note: PHP self is nessesary to override any link vars.-->
                         <form role="form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <div class="form-group">
-                                <label for="email">Account:</label>
+                                <label for="email">Account</label>
                                 <input type="text" class="form-control" name="account" id="account" required>
                             </div>
                             <div class="form-group">
-                                <label for="pwd">Password:</label>
+                                <label for="pwd">Password</label>
                                 <input type="password" class="form-control" name="credential" id="credential" required>
                             </div>
                             
@@ -124,8 +118,11 @@
                     
             <?php echo $obj_navigation_main->get_markup_footer(); ?>
         </div><!--container-->        
-    <script>
-</script>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
 </body>
 </html>
 

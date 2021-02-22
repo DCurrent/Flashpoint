@@ -1,5 +1,5 @@
 /* CSS Document */
-
+/*
 @media (max-width: 350px) {
   .btn-responsive {
     padding:3px 6px;
@@ -24,58 +24,12 @@
   }
 }
 
-.btn a
-{
-	color:#FFF;
-}
-
-.icon-bar
-{
-	background-color:#FFF;
-}
-
-.navbar a
-{
-	color:#FFF;
-}
-
-.navbar a:hover
-{
-	color:#000;
-}
-
-.navbar a:focus
-{
-	color:#000;
-}
-
-.navbar a.disabled
-{
-	color:#CCC;
-}
-
-.dropdown-menu
-{
-	background-color: 			#224D7A;
-}
-
-.dropdown-menu > li > a
-{
-	color:#FFF;
-}
-
-a.navbar-brand:hover
-{	
-	text-decoration:			none;
-	color:#FFF;
-}
-
 .navbar
 {
-	background-color: 			#224D7A;
-	background-image: 			linear-gradient(to bottom right, #3981CC 0%, #09131F 100%);
+	background-color:#f8f9fa;
+	background-image: 			linear-gradient(to bottom right, #f8f9fa 0%, #f8f9fa 100%);
 	border-radius:				5px;
 	box-shadow: 				0px 5px 5px #888888;
 	margin-top:5px;
 }
-
+*/
