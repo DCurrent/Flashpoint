@@ -19,7 +19,7 @@
 		const NAME			= 'Flashpoint';
 		const ADMINS		= 'dwhibb0, dvcask2';
 		const ADMIN_MAIN 	= 'dvcask2';
-		const AUTHENTICATE_URL = 'http://ehs.uky.edu/apps/flashpoint';
+		const AUTHENTICATE_URL = 'https://ehs.uky.edu/apps/flashpoint';
 	}
 	
 	abstract class DATABASE
