@@ -139,7 +139,7 @@
 							if($this->access_obj->get_account())
 							{
 						?>
-                   		  <li><a href="<?php echo $this->access_obj->get_config()->get_authenticate_url(); ?>?access_action=<?php echo \dc\access\ACTION::LOGOFF; ?>"><span class="glyphicon glyphicon-log-out"></span> <?php echo $this->access_obj->name_full(); ?></a></li>
+                   		  <li><a href="<?php echo $this->access_obj->get_config()->get_authenticate_url(); ?>?access_action=<?php echo \dc\stoeckl\ACTION::LOGOFF; ?>"><span class="glyphicon glyphicon-log-out"></span> <?php echo $this->access_obj->name_full(); ?></a></li>
                         <?php
 							}
 							else
@@ -164,36 +164,29 @@
 		
 		public function generate_markup_footer()
 		{
-			// Start output caching.
 			ob_start();
-		?>
-        	
-            <div id="nav_footer" class="container well" style="width:95%; margin-top:20px;">
-            	<a href="//www.uky.edu"><img src="<?php echo $this->directory_prime; ?>/media/uk_logo_1.png" alt="University of Kentucky" style="float:left; margin-top:10px; margin-bottom:5px;"></a>
-                            
-                <ul class="list-inline">                       
-                    <li>
-                    	<ul class="list-unstyled text-muted small" style="margin-bottom:10px;">
-                        	<li><?php echo APPLICATION_SETTINGS::NAME; ?> Ver <?php echo APPLICATION_SETTINGS::VERSION; ?></li>   
-                        	<li>Developed by: <a href="mailto:dvcask2@uky.edu"><span class="glyphicon glyphicon-envelope"></span> Damon V. Caskey</a></li>
-                            <li>Copyright &copy; <?php echo date("Y"); ?>, University of Kentucky</li>
-                            <li>Last update: 
-                                <?php 
-                                echo date('Y-m-d H:i', filemtime($_SERVER['SCRIPT_FILENAME']));  
-                                
-                                if (isset($iReqTime)) 
-                                { 
-                                    echo ". Generated in " .round(microtime(true) - $iReqTime,3). " seconds."; 
-                                } 
-                                ?></li>
-                     	</ul>
-                     </li>
-                     <div style="float:right;">
-                        <img src="<?php echo $this->directory_prime; ?>/media/php_logo_1.png" class="img-responsive pull-right" alt="Powered by objected oriented PHP." title="Powered by object oriented PHP." />
-                     </div>
-                </ul>
-            </div><!--#nav_footer-->
-        <?php
+			?>
+			
+			<br><br>
+			<div class="card bg-light">
+				<div class="card-body">
+					
+					<img class="float-right d-none d-sm-inline" src="<?php echo $this->directory_prime; ?>/media/php_logo_1.png" class="img-responsive pull-right .d-sm-none" alt="Powered by objected oriented PHP." title="Powered by object oriented PHP." />
+					
+					<img class="float-left d-none d-sm-inline" style="margin-right: 15px; width: 100px" src="<?php echo $this->directory_prime; ?>/media/uk_logo_1.png" class="img-responsive pull-right .d-sm-none" alt="Powered by objected oriented PHP." title="Powered by object oriented PHP." />
+					
+					<span class="text-muted small"><?php echo APPLICATION_SETTINGS::NAME; ?> Ver <?php echo APPLICATION_SETTINGS::VERSION; ?></span>
+					<br>
+					<span class="text-muted small">Developed by: <a href="mailto:dvcask2@uky.edu"><span class="glyphicon glyphicon-envelope"></span> Caskey, Damon V.</a></span>
+					<br>
+					<span class="text-muted small">Copyright &copy; <?php echo date("Y"); ?>, University of Kentucky.</span>
+					<br>
+				</div>
+			</div>
+					
+
+			
+			<?php
 			// Collect contents from cache and then clean it.
 			$this->markup_footer = ob_get_contents();
 			ob_end_clean();
