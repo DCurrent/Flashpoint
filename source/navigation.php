@@ -139,7 +139,8 @@
 							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 								<!--<a class="dropdown-item" href="#">Select an action</a>-->
 								<!--<div class="dropdown-divider"></div>-->
-								<a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/alarm_list.php">Alarm List</a>
+								<a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/alarm_list.php">Alarm Report List</a>
+                                <a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/alarm_entry.php">Create Fire Alarm Report</a>
 							</div>
 						</li>
 					</ul>
