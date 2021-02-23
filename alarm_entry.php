@@ -507,23 +507,22 @@
                         </div>
                     </div>              
                     
-                    
                     <div class="form-group row">
                         <label class="col-sm-2" for="notified">Notified</label>
                         <div class="col-sm-10">
-                            <!--Notified: <?php echo $_main_data->get_notified(); ?>-->
+                            <!--Occupied: <?php echo $_main_data->get_notified(); ?>-->
                         
-                            <div>
-                                <label class="radio-inline">
-                                    <input type="radio" name="notified" value="0" <?php if(!$_main_data->get_notified()) echo ' checked ';?>>No
-                                </label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="notified" id="notified_0" value="0" <?php if(!$_main_data->get_notified()) echo ' checked ';?> required>
+                                <label class="form-check-label" for="notified_0">No</label>
+                            </div>
                             
-                                <label class="radio-inline">
-                                    <input type="radio" name="notified" value="1" <?php if($_main_data->get_notified() == 1) echo ' checked ';?>>Yes
-                                </label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="notified" id="notified_1" value="0" <?php if($_main_data->get_notified()) echo ' checked ';?> required>
+                                <label class="form-check-label" for="notified_1">Yes</label>
                             </div>
                         </div>
-                    </div>                
+                    </div>                                 
                 </fieldset>
                         
                 <fieldset id="incident">
