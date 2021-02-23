@@ -243,15 +243,12 @@
 	/* 
     * Datalist list generation.
 	*/
-
-    /* Cause */
+    
     $_obj_data_list_cause_list = $dc_yukon_connection->get_row_object_list('{call fire_alarm_cause_list}', 'class_common_data');
-
-	/* Party. */
     $_obj_data_list_party_list = $dc_yukon_connection->get_row_object_list('{call fire_alarm_party_list}', 'class_common_data');
 	
 	/* Type. */
-	$_obj_data_list_type_list = $dc_yukon_connection->get_row_object_list('{call fire_alarm_type_list}', 'class_common_data');
+	$_obj_data_list_type_list = $dc_yukon_connection->get_row_object_list('{call dc_flashpoint_fire_alarm_type_list}', 'class_common_data');
 	
 	/* Generate navigation buttons. */
 	$obj_navigation_rec->generate_button_list();
@@ -614,7 +611,7 @@
                                                         	type	="radio" 
                                                             name	="fire" 
                                                             value	="<?php echo $_obj_data_list_type->get_id(); ?>" <?php echo $selected;?> 
-                                                            required><?php echo $_obj_data_list_type->get_label(); ?>
+                                                            required>&nbsp;<?php echo $_obj_data_list_type->get_label(); ?>
                                                     </label>                                                    
 												<?php										
 											}
