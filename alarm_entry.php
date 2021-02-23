@@ -565,40 +565,6 @@
                         </div>
                     
                     	<div class="form-group row">
-                            <label class="col-sm-2" for="fire">Type of Incident</label>
-                            <div class="col-sm-10">
-                                <!--Fire (type of incident): <?php echo $_main_data->get_fire(); ?>-->
-                                <div>
-                                	<?php
-										if(is_object($_obj_data_list_type_list) === TRUE)
-										{
-											for($_obj_data_list_type_list->rewind(); $_obj_data_list_type_list->valid(); $_obj_data_list_type_list->next())
-											{						
-												$_obj_data_list_type = $_obj_data_list_type_list->current();
-												
-												$selected = NULL;
-												
-												if($_obj_data_list_type->get_id() == $_main_data->get_fire())
-												{
-													$selected = ' checked ';
-												}
-												?>
-                                                	<label class="radio-inline">
-                                                        <input 
-                                                        	type	="radio" 
-                                                            name	="fire" 
-                                                            value	="<?php echo $_obj_data_list_type->get_id(); ?>" <?php echo $selected;?> 
-                                                            required>&nbsp;<?php echo $_obj_data_list_type->get_label(); ?>
-                                                    </label>                                                    
-												<?php										
-											}
-										}
-									?>                                               	
-                                </div>
-                            </div>
-                        </div>
-                    
-                    	<div class="form-group row">
                             <label class="col-sm-2" for="cause">Cause of Incident</label>
                             <div class="col-sm-10"> 
                                 <select class		= "form-control"
@@ -661,16 +627,17 @@
                         <div class="form-group row">
                             <label class="col-sm-2" for="extinguisher">Fire Extinguisher Used</label>
                             <div class="col-sm-10">
-                                <!--Occupied: <?php echo $_main_data->get_extinguisher(); ?>-->
-                            
-                                <div>
-                                    <label class="radio-inline">
-                                        <input type="radio" name="extinguisher" value="0" <?php if(!$_main_data->get_extinguisher()) echo ' checked ';?> required>No
-                                    </label>
-                                    
-                                    <label class="radio-inline">
-                                        <input type="radio" name="extinguisher" value="1" <?php if($_main_data->get_extinguisher() == 1) echo ' checked ';?> required>Yes
-                                    </label>
+
+                                <!--Extinguisher: <?php echo $_main_data->get_extinguisher(); ?>-->
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="extinguisher" id="extinguisher_0" value="0" <?php if(!$_main_data->get_extinguisher()) echo ' checked ';?> required>
+                                    <label class="form-check-label" for="extinguisher_0">No</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="extinguisher" id="extinguisher_1" value="0" <?php if($_main_data->get_extinguisher()) echo ' checked ';?> required>
+                                    <label class="form-check-label" for="extinguisher_1">Yes</label>
                                 </div>
                             </div>
                         </div>
