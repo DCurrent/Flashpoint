@@ -261,31 +261,11 @@
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
         <title><?php echo APPLICATION_SETTINGS::NAME; ?>, Alarm Entry</title>        
         
-         <!-- Latest compiled and minified CSS -->
+        <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
         
-        <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
-        <script src="source/jquery_ui_timepicker_addon.js"></script>
-        
-        <!-- Latest compiled JavaScript -->
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-        
-        <!-- Place inside the <head> of your HTML -->
-		<script type="text/javascript" src="http://ehs.uky.edu/libraries/vendor/tinymce/tinymce.min.js"></script>
-        <script type="text/javascript">
-        tinymce.init({
-            selector: "textarea",
-    plugins: [
-        "advlist autolink lists link image charmap print preview anchor",
-        "searchreplace visualblocks code fullscreen",
-        "insertdatetime media table contextmenu paste"
-    ],
-    toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"});
-        </script>
         <script src="../../libraries/javascript/options_update.js"></script>
     
         
@@ -747,29 +727,26 @@
             </form>
             
             <?php echo $obj_navigation_main->get_markup_footer(); ?>
-        </div><!--container-->        
+        </div><!--container-->    
+        
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        
     <script>
   $('.room_search').change(function(event)
     {	
-		options_update(event, null, '#room_code');	
+		//options_update(event, null, '#room_code');	
 	});
   
   $(document).ready(function(event)
     {
     	$('[data-toggle="tooltip"]').tooltip();
 	
-		options_update(event, null, '#building_code');
+		//options_update(event, null, '#building_code');
 	
-	});
-        
-    /*
-    * Date and time picker.
-    */
-    $(function(){
-                    $( '.date_time' ).datetimepicker({dateFormat: 'yy-mm-dd', timeFormat: 'HH:mm:ss', changeYear: true, constrainInput: true});
-                });
-       
-
+	});        
+    
 </script>
 
 </body>
