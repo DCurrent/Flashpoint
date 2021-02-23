@@ -114,8 +114,5 @@
 
 	$dc_nahoni_session = new \dc\nahoni\Session($dc_nahoni_config);
 	session_set_save_handler($dc_nahoni_session, TRUE);
-	session_start();	
-
-    
-
+	session_start();
 ?>

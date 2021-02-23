@@ -1,8 +1,5 @@
-<?php 
-	
-	
-	require(__DIR__.'/source/main.php');
-	 
+<?php 	
+	require(__DIR__.'/source/main.php');	 
 
 	$dialog = NULL;
 	
@@ -303,7 +300,7 @@
             
             <?php echo $dialog; ?>
             
-            <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">           
+            <form class="" role="form" method="post" enctype="multipart/form-data">           
            		<input type="hidden" name="account" id="account" value="<?php echo $_main_data->get_log_update_by(); ?>" />
                 
 				<?php //echo $obj_navigation_rec->get_markup(); ?>         
@@ -322,7 +319,7 @@
                 ?>         		
           
           		<div class="form-group row">
-                	<label class="control-label col-sm-2" for="account_dsp">Created by</label>
+                	<label class="col-sm-2" for="account_dsp">Created by</label>
                 	<div class="col-sm-10">
                 		<input type="text" class="form-control"  name="account_dsp" id="account_dsp" placeholder="Person creating ticket." 
                         value="<?php echo $lookup->get_name_f().' '.$lookup->get_name_l(); ?>" 
@@ -362,7 +359,7 @@
 				?>
                 
                 <div class="form-group row">
-                	<label class="control-label col-sm-2" for="label">Title of Entry</label>
+                	<label class="col-sm-2" for="label">Title of Entry</label>
                 	<div class="col-sm-10">
                 		<input type="text" class="form-control"  name="label" id="label" placeholder="Title of entry." value="<?php echo $_main_data->get_label(); ?>">
                 	</div>
@@ -372,7 +369,7 @@
                 	<legend>Location</legend>
                     
                     <div class="form-group row">
-                        <label class="control-label col-sm-2" for="building_code">Facility</label>
+                        <label class="col-sm-2" for="building_code">Facility</label>
                         <div class="col-sm-10">
                             <select name="building_code" 
                                 id="building_code" 
@@ -390,7 +387,7 @@
                     </div> 
                                    
                     <div class="form-group row">
-                        <label class="control-label col-sm-2" for="room_code">Area</label>
+                        <label class="col-sm-2" for="room_code">Area</label>
                         <div class="col-sm-10">
                             <select name="room_code" 
                                 id="room_code" 
@@ -407,7 +404,7 @@
                     </div>
                     
                     <div class="form-group row">
-                        <label class="control-label col-sm-2" for="occupied">Building Occupied</label>
+                        <label class="col-sm-2" for="occupied">Building Occupied</label>
                         <div class="col-sm-10">
                             
                             <!--Occupied: <?php echo $_main_data->get_occupied(); ?>-->
@@ -425,7 +422,7 @@
                     </div>
                     
                     <div class="form-group row">
-                        <label class="control-label col-sm-2" for="evacuated">Building Evacuated</label>
+                        <label class="col-sm-2" for="evacuated">Building Evacuated</label>
                         <div class="col-sm-10">
                             <!--Occupied: <?php echo $_main_data->get_evacuated(); ?>-->
                         
@@ -447,7 +444,7 @@
                 	<legend>Alarm</legend>
                     
                     <div class="form-group row">
-                        <label class="control-label col-sm-2" for="time_reported">Time of Incident</label>
+                        <label class="col-sm-2" for="time_reported">Time of Incident</label>
                         <div class="col-sm-10">
                             <input type="text"
                             	class	="form-control"  
@@ -460,7 +457,7 @@
                     </div>
                     
                     <div class="form-group row">
-                        <label class="control-label col-sm-2" for="time_silenced">Time Silenced</label>
+                        <label class="col-sm-2" for="time_silenced">Time Silenced</label>
                         <div class="col-sm-10">                            
                             <input type="text"
                             	class	="form-control"  
@@ -473,7 +470,7 @@
                     </div>
                     
                     <div class="form-group row">
-                        <label class="control-label col-sm-2" for="time_reset">Time Reset</label>
+                        <label class="col-sm-2" for="time_reset">Time Reset</label>
                         <div class="col-sm-10">                            
                             <input type="text"
                             	class	="form-control"  
@@ -547,7 +544,7 @@
                     
                     
                     <div class="form-group row">
-                        <label class="control-label col-sm-2" for="notified">Notified</label>
+                        <label class="col-sm-2" for="notified">Notified</label>
                         <div class="col-sm-10">
                             <!--Notified: <?php echo $_main_data->get_notified(); ?>-->
                         
@@ -568,7 +565,7 @@
                 	<legend>Incident</legend>
                     
                     	<div class="form-group row">
-                            <label class="control-label col-sm-2" for="fire">Type of Incident</label>
+                            <label class="col-sm-2" for="fire">Type of Incident</label>
                             <div class="col-sm-10">
                                 <!--Fire (type of incident): <?php echo $_main_data->get_fire(); ?>-->
                                 <div>
@@ -602,7 +599,7 @@
                         </div>
                     
                     	<div class="form-group row">
-                            <label class="control-label col-sm-2" for="cause">Cause of Incident</label>
+                            <label class="col-sm-2" for="cause">Cause of Incident</label>
                             <div class="col-sm-10"> 
                                 <select class		= "form-control"
                                         name		= "cause" 
@@ -632,7 +629,7 @@
                     	</div>
                         
                         <div class="form-group row">
-                            <label class="control-label col-sm-2" for="cause">Responsible Party</label>
+                            <label class="col-sm-2" for="cause">Responsible Party</label>
                             <div class="col-sm-10"> 
                                 <select class		= "form-control"
                                         name		= "responsible_party" 
@@ -662,7 +659,7 @@
                         </div>
                         
                         <div class="form-group row">
-                            <label class="control-label col-sm-2" for="extinguisher">Fire Extinguisher Used</label>
+                            <label class="col-sm-2" for="extinguisher">Fire Extinguisher Used</label>
                             <div class="col-sm-10">
                                 <!--Occupied: <?php echo $_main_data->get_extinguisher(); ?>-->
                             
@@ -679,14 +676,14 @@
                         </div>
                         
                         <div class="form-group row">
-                            <label class="control-label col-sm-2" for="label">Injuries</label>
+                            <label class="col-sm-2" for="label">Injuries</label>
                             <div class="col-sm-3">
                                 <input type="number" min="0" step="1" class="form-control"  name="injuries" id="injuries" value="<?php echo $_main_data->get_injuries(); ?>" required>
                             </div>
                         </div>
                         
                         <div class="form-group row">
-                            <label class="control-label col-sm-2" for="label">Fatalities</label>
+                            <label class="col-sm-2" for="label">Fatalities</label>
                             <div class="col-sm-3">
                                 <!--<?php echo $_main_data->get_fatalities(); ?>-->
                                 <input type="number" min="0" step="1" class="form-control"  name="fatalities" id="fatalities" value="<?php echo $_main_data->get_fatalities(); ?>" required>
@@ -694,14 +691,14 @@
                         </div>
                         
                         <div class="form-group row">
-                            <label class="control-label col-sm-2" for="injury_desc">Casualty Description</label>
+                            <label class="col-sm-2" for="injury_desc">Casualty Description</label>
                             <div class="col-sm-10">
                                 <textarea class="form-control" rows="5" name="injury_desc" id="injury_desc"><?php echo $_main_data->get_injury_desc(); ?></textarea>
                             </div>
                         </div> 
                         
                         <div class="form-group row">
-                            <label class="control-label col-sm-2" for="label">Property Damage</label>
+                            <label class="col-sm-2" for="label">Property Damage</label>
                             <div class="col-sm-3">
                                 <!--<?php echo $_main_data->get_property_damage(); ?>-->
                                 <input type="text" class="form-control"  name="property_damage" id="property_damage" placeholder="0.0" value="<?php echo $_main_data->get_property_damage(); ?>" required>
@@ -709,7 +706,7 @@
                         </div>
                         
                         <div class="form-group row">
-                            <label class="control-label col-sm-2" for="details">Details</label>
+                            <label class="col-sm-2" for="details">Details</label>
                             <div class="col-sm-10">
                                 <textarea class="form-control" rows="5" name="details" id="details"><?php echo $_main_data->get_details(); ?></textarea>
                             </div>
