@@ -11,12 +11,12 @@
     * log in status. Needs fix now.
 	*/
     $access_obj_process = new \dc\stoeckl\process();
-	$access_obj_process->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);
-	$access_obj_process->get_config()->set_use_local(FALSE);
+	$access_obj_process->get_member_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);
+	$access_obj_process->get_member_config()->set_use_local(FALSE);
 	$access_obj_process->process_control();
 		
     $access_obj = new \dc\stoeckl\status();
-	$access_obj->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
+	$access_obj->get_member_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
 	$access_obj->verify();
 
 	/* Main navigaiton. */

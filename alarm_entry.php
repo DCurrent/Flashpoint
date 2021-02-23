@@ -14,12 +14,12 @@
     * log in status. Needs fix now.
 	*/
     $access_obj_process = new \dc\stoeckl\process();
-	$access_obj_process->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);
-	$access_obj_process->get_config()->set_use_local(FALSE);
+	$access_obj_process->get_member_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);
+	$access_obj_process->get_member_config()->set_use_local(FALSE);
 	$access_obj_process->process_control();
 		
     $access_obj = new \dc\stoeckl\status();
-	$access_obj->get_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
+	$access_obj->get_member_config()->set_authenticate_url(APPLICATION_SETTINGS::AUTHENTICATE_URL);	
 	$access_obj->verify();    
     $access_obj->action();
 				
@@ -245,34 +245,13 @@
 	*/
 
     /* Cause */
-	$_obj_data_list_cause_list = NULL;
-	
-	$query->set_sql('{call fire_alarm_cause_list}');
-		
-	$query->query();
-	$query->get_line_params()->set_class_name('class_common_data');
-	
-	$_obj_data_list_cause_list = $query->get_line_object_list();
-	
+    $_obj_data_list_cause_list = $dc_yukon_connection->get_row_object_list('{call fire_alarm_cause_list}', 'class_common_data');
+
 	/* Party. */
-	$_obj_data_list_party_list = NULL;
-	
-	$query->set_sql('{call fire_alarm_party_list}');
-		
-	$query->query();
-	$query->get_line_params()->set_class_name('class_common_data');
-	
-	$_obj_data_list_party_list = $query->get_line_object_list();
+    $_obj_data_list_party_list = $dc_yukon_connection->get_row_object_list('{call fire_alarm_party_list}', 'class_common_data');
 	
 	/* Type. */
-	$_obj_data_list_type_list = NULL;
-	
-	$query->set_sql('{call fire_alarm_type_list}');
-		
-	$query->query();
-	$query->get_line_params()->set_class_name('class_common_data');
-	
-	$_obj_data_list_type_list = $query->get_line_object_list();	
+	$_obj_data_list_type_list = $dc_yukon_connection->get_row_object_list('{call fire_alarm_type_list}', 'class_common_data');
 	
 	/* Generate navigation buttons. */
 	$obj_navigation_rec->generate_button_list();

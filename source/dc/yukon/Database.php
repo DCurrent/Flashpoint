@@ -8,15 +8,15 @@ require_once('config.php');
 interface iDatabase
 {	
 	// Accessors
-	function get_config();							// Return config object.
-	function get_connection();						// Return connection object.
+	function get_member_config();							// Return config object.
+	function get_member_connection();						// Return connection object.
 	function get_line_config();						// Return line parameters object.
 	function get_param_array();						// Return query parameter array.
 	function get_sql();								// Return current SQl statement.
 	function get_statement();						// Return query statement data member.
 	
 	// Mutators
-	function set_config(DatabaseConfig $value);		// Set the object to be used for query config settings.
+	function set_member_config(DatabaseConfig $value);		// Set the object to be used for query config settings.
 	function set_connection(Connect $value);		// Set connection data member.
 	function set_line_config(LineConfig $value);	// Set line parameters object.
 	function set_param_array(array $value);			// Set query sql parameter array data member.
@@ -137,12 +137,12 @@ class Database implements iDatabase
 	
 	
 	// *Accessors
-	public function get_config()
+	public function get_member_config()
 	{
 		return $this->config;
 	}
 	
-	public function get_connection()
+	public function get_member_connection()
 	{
 		return $this->connect;
 	}
@@ -174,7 +174,7 @@ class Database implements iDatabase
 		$this->params = $value;
 	}
 	
-	public function set_config(DatabaseConfig $value)
+	public function set_member_config(DatabaseConfig $value)
 	{
 		$this->config = $value;
 	}
@@ -287,7 +287,7 @@ class Database implements iDatabase
 		$config_a	= array();	// Query config array.
 		
 		// Dereference data members.
-		$connect	= $this->connect->get_connection();
+		$connect	= $this->connect->get_member_connection();
 		$sql 		= $this->sql;
 		$params 	= $this->params;
 		$config		= $this->config;
@@ -357,7 +357,7 @@ class Database implements iDatabase
 		$config_a	= array();	// Query config array.
 				
 		// Dereference data members.
-		$connect 	= $this->connect->get_connection();
+		$connect 	= $this->connect->get_member_connection();
 		$sql 		= $this->sql;
 		$params 	= $this->params;
 		$config 	= $this->config;

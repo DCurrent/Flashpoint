@@ -9,7 +9,7 @@
 		function get_feedback();
 		function get_login_result();
 		function get_redirect();
-		function get_config();
+		function get_member_config();
 		
 		// Mutators
 		function set_access_action($value);
@@ -112,7 +112,7 @@
 			return $this->feedback;
 		}
 		
-		public function get_config()
+		public function get_member_config()
 		{
 			return $this->config;
 		}

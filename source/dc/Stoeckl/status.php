@@ -14,13 +14,13 @@
 		function get_name_l();
 		function get_name_m();	
 		function get_redirect();
-		function get_config();
+		function get_member_config();
 				
 		// Mutators	
 		function set_list($value);				
 		function set_authorized($value);
 		function set_redirect($value);	
-		function set_config(config $value);				
+		function set_member_config(config $value);				
 											
 		// Operations
 		function action();	
@@ -58,7 +58,7 @@
 			return $this->data_account->get_id();
 		}
 		
-		public function get_config()
+		public function get_member_config()
 		{
 			return $this->config;
 		}
@@ -99,7 +99,7 @@
 		}
 		
 		// Mutators	
-		public function set_config(config $value)
+		public function set_member_config(config $value)
 		{
 			$this->config = $value;
 		}

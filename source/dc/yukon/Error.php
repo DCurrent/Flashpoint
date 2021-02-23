@@ -8,11 +8,11 @@ require_once('config.php');
 interface iError
 {
 	// Accessors
-	function get_config();
+	function get_member_config();
 	function get_exception();
 	
 	// Mutators
-	function set_config(ErrorConfig $value);
+	function set_member_config(ErrorConfig $value);
 	function set_exception(Exception $value);
 	
 	// Core
@@ -32,12 +32,12 @@ class Error implements iError
 	}
 	
 	// Accessors.
-	public function get_config()
+	public function get_member_config()
 	{
 		return $this->config;
 	}
 	
-	public function set_config(ErrorConfig $value)
+	public function set_member_config(ErrorConfig $value)
 	{
 		$this->config = $value;
 	}

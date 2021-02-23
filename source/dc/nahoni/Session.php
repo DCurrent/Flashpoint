@@ -8,8 +8,8 @@ require_once('config.php');
 
 interface iSession
 {
-	function get_config();
-	function set_config(SessionConfig $value);
+	function get_member_config();
+	function set_member_config(SessionConfig $value);
 }
 
 /*
@@ -28,11 +28,11 @@ class Session implements \SessionHandlerInterface, iSession
 		// parameter instance.
 		if($config)
 		{
-			$this->set_config($config);
+			$this->set_member_config($config);
 		}
 		else
 		{
-			$this->set_config(new SessionConfig);
+			$this->set_member_config(new SessionConfig);
 		}		
 	}
 	
@@ -42,13 +42,13 @@ class Session implements \SessionHandlerInterface, iSession
 	}
 	
 	// Accessors
-	public function get_config()
+	public function get_member_config()
 	{
 		return $this->config;
 	}
 	
 	// Mutators
-	public function set_config(SessionConfig $value)
+	public function set_member_config(SessionConfig $value)
 	{
 		$this->config = $value;
 	}

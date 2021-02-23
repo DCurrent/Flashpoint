@@ -7,7 +7,7 @@
 	interface iPaging
 	{		
 		// Accessors
-		function get_config();
+		function get_member_config();
 		function get_markup();
 		function get_row_max();
 		function get_row_count();
@@ -15,7 +15,7 @@
 		function get_page_current();
 		
 		// Mutators
-		function set_config($value);
+		function set_member_config($value);
 		function set_markup($value);
 		function set_row_count_total($value);		
 		function set_row_max($value);
@@ -44,11 +44,11 @@
 		{			
 			if($config)
 			{
-				$this->set_config($config);
+				$this->set_member_config($config);
 			}
 			else
 			{
-				$this->set_config(new PagingConfig);
+				$this->set_member_config(new PagingConfig);
 			}
 			
 			$this->populate_from_request();
@@ -62,12 +62,12 @@
 			}						
 		}				
 		
-		public function get_config()
+		public function get_member_config()
 		{
 			return $this->config;
 		}
 		
-		public function set_config($value)
+		public function set_member_config($value)
 		{
 			$this->config = $value;
 		}

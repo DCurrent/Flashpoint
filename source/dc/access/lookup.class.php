@@ -5,7 +5,7 @@
 	interface ilookup
 	{
 		// Accessors.
-		function get_config();
+		function get_member_config();
 		function get_DataAccount();		
 		
 		// Mutators.
@@ -40,7 +40,7 @@
 			$this->data_account = new DataAccount();		
 		}	
 		
-		public function get_config()
+		public function get_member_config()
 		{
 			return $this->config;
 		}

@@ -9,7 +9,7 @@
 		function get_feedback();
 		function get_login_result();
 		function get_redirect();
-		function get_config();
+		function get_member_config();
 		
 		// Mutators
 		function set_access_action($value);
@@ -120,7 +120,7 @@
 			return $this->feedback;
 		}
 		
-		public function get_config()
+		public function get_member_config()
 		{
 			return $this->config;
 		}
@@ -166,7 +166,7 @@
 					$this->data_account->populate_from_request();
 					
 					// First try local.
-					if($this->get_config()->get_use_local() == TRUE)
+					if($this->get_member_config()->get_use_local() == TRUE)
 					{
 						$this->login_local();
 					}					
