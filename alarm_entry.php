@@ -424,7 +424,7 @@
                     <div class="form-group row">
                         <label class="col-sm-2" for="evacuated">Building Evacuated</label>
                         <div class="col-sm-10">
-                            <!--Occupied: <?php echo $_main_data->get_evacuated(); ?>-->
+                            <!--Evacuated: <?php echo $_main_data->get_evacuated(); ?>-->
                         
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="evacuated" id="evacuated_0" value="0" <?php if(!$_main_data->get_evacuated()) echo ' checked ';?> required>
@@ -510,7 +510,7 @@
                     <div class="form-group row">
                         <label class="col-sm-2" for="notified">Notified</label>
                         <div class="col-sm-10">
-                            <!--Occupied: <?php echo $_main_data->get_notified(); ?>-->
+                            <!--Notified: <?php echo $_main_data->get_notified(); ?>-->
                         
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="notified" id="notified_0" value="0" <?php if(!$_main_data->get_notified()) echo ' checked ';?> required>
@@ -527,6 +527,42 @@
                         
                 <fieldset id="incident">
                 	<legend>Incident</legend>
+                    
+                        <div class="form-group row">
+                            <label class="col-sm-2" for="">Type of Incident</label>
+                            <div class="col-sm-10">
+                                <!--Fire (type of incident): <?php echo $_main_data->get_fire(); ?>-->
+
+                                <?php
+                                    if(is_object($_obj_data_list_type_list) === TRUE)
+                                    {
+                                        for($_obj_data_list_type_list->rewind(); $_obj_data_list_type_list->valid(); $_obj_data_list_type_list->next())
+                                        {						
+                                            $_obj_data_list_type = $_obj_data_list_type_list->current();
+
+                                            /*
+                                            * Populate selected if the ID of current element
+                                            * in loop matches the underlying data value or if
+                                            * there's no underlying data value at all and current
+                                            * element ID matches a predetermined default.                                            
+                                            */
+                                            $selected = NULL;
+                                                                                        
+                                            if($_obj_data_list_type->get_id() == $_main_data->get_fire() || !$_main_data->get_fire() && $_obj_data_list_type->get_id() == 6)
+                                            {
+                                                $selected = ' checked ';
+                                            }
+                                            ?>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="fire" id="fire_<?php echo $_obj_data_list_type->get_id(); ?>" value="<?php echo $_obj_data_list_type->get_id(); ?>" <?php $selected; ?> required>
+                                                    <label class="form-check-label" for="fire_<?php echo $_obj_data_list_type->get_id(); ?>"><?php echo $_obj_data_list_type->get_label(); ?></label>
+                                                </div>                                          
+                                            <?php										
+                                        }
+                                    }
+                                ?>
+                            </div>
+                        </div>
                     
                     	<div class="form-group row">
                             <label class="col-sm-2" for="fire">Type of Incident</label>
