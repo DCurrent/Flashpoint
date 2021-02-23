@@ -482,65 +482,30 @@
                         </div>                        
                     </div>
                     
-                    <div class="form-group row">                    	
-                        <div class="col-sm-offset-2 col-sm-10">
-                            <fieldset>
-                                <legend>Report Methods</legend>
-                                
-                                <p>Toggle reporting devices.</p>
-                                            
-                                <ul class="checkbox">
-                                    <li>
-                                        <input 
-                                            name="report_device_pull" 
-                                            id="report_device_pull" 
-                                            value="1" 
-                                            type="checkbox" <?php if($_main_data->get_report_device_pull() == TRUE) echo ' checked '; ?>>
-                                        <label for="report_device_pull">Pull Station</label>
-                                    </li> 
-                                        
-                                    <li>
-                                        <input 
-                                            name="report_device_sprinkler" 
-                                            id="report_device_sprinkler" 
-                                            value="1" 
-                                            type="checkbox" <?php if($_main_data->get_report_device_sprinkler() == TRUE) echo ' checked '; ?>>
-                                        <label for="report_device_sprinkler">Sprinkler Activation</label>
-                                    </li>
-                                    
-                                    <li>
-                                        <input 
-                                            name="report_device_smoke" 
-                                            id="report_device_smoke" 
-                                            value="1" 
-                                            type="checkbox" <?php if($_main_data->get_report_device_smoke() == TRUE) echo ' checked '; ?>>
-                                        <label for="report_device_smoke">Smoke/Heat Detector</label>
-                                    </li>
-                                    
-                                    <li>
-                                        <input 
-                                            name="report_device_stove" 
-                                            id="report_device_stove" 
-                                            value="1" 
-                                            type="checkbox" <?php if($_main_data->get_report_device_stove() == TRUE) echo ' checked '; ?>>
-                                        <label for="report_device_stove">Alternate Suppression</label>
-                                    </li>
-                                    
-                                    <li>
-                                        <input 
-                                            name="report_device_911" 
-                                            id="report_device_911" 
-                                            value="1" 
-                                            type="checkbox" <?php if($_main_data->get_report_device_911() == TRUE) echo ' checked '; ?>>
-                                        <label for="report_device_911">911 Call</label>
-                                    </li>
-                                </ul>                                    
-                            </fieldset>
+                    <div class="form-group row">
+                        <label class="col-sm-2" for="devices_activated">Devices Activated</label>
+                        <div class="col-sm-10" id="devices_activated">
+                            <div class="form-check form-check">
+                                <input class="form-check-input" type="checkbox" name="report_device_pull" id="report_device_pull" value="1" <?php if($_main_data->get_report_device_pull() == TRUE) echo ' checked '; ?>>
+                                <label class="form-check-label" for="report_device_pull">Pull Station</label>
+                            </div>
+
+                            <div class="form-check form-check">
+                                <input class="form-check-input" type="checkbox" name="report_device_sprinkler" id="report_device_sprinkler" value="1" <?php if($_main_data->get_report_device_sprinkler() == TRUE) echo ' checked '; ?>>
+                                <label class="form-check-label" for="report_device_sprinkler">Sprinkler Activation</label>
+                            </div>
+
+                            <div class="form-check form-check">
+                                <input class="form-check-input" type="checkbox" name="report_device_smoke" id="report_device_smoke" value="1" <?php if($_main_data->get_report_device_smoke() == TRUE) echo ' checked '; ?>>
+                                <label class="form-check-label" for="report_device_smoke">Smoke/Heat Detector</label>
+                            </div>
+
+                            <div class="form-check form-check">
+                                <input class="form-check-input" type="checkbox" name="report_device_stove" id="report_device_stove" value="1" <?php if($_main_data->get_report_device_stove() == TRUE) echo ' checked '; ?>>
+                                <label class="form-check-label" for="report_device_stove">Alternate Suppression</label>
+                            </div>
                         </div>
-                    </div>
-            
-                    
-                    
+                    </div>              
                     
                     
                     <div class="form-group row">
