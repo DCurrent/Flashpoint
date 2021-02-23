@@ -85,7 +85,7 @@
 		{
             require($file_name_full);
 			
-        	echo '<!-- '.$class_name_arg.', loaded successfully. -->'.PHP_EOL;
+        	//echo '<!-- '.$class_name_arg.', loaded successfully. -->'.PHP_EOL;
 		} 
 		else 
 		{

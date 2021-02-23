@@ -254,9 +254,8 @@
 	$obj_navigation_rec->generate_button_list();
 	
 ?>
-
 <!DOCtype html>
-<html lang="en">
+    <html lang="en">
     <head>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
         <title><?php echo APPLICATION_SETTINGS::NAME; ?>, Alarm Entry</title>        

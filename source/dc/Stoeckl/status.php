@@ -255,10 +255,7 @@
         * authorization result.
         */
 		public function action()
-		{		
-            
-            echo 'action() $this->authorized: '.$this->authorized;
-            
+		{  
 			/* Now we'll take action based on authorization result. */
 			switch ($this->authorized)
 			{
