@@ -564,6 +564,39 @@
                             </div>
                         </div>
                     
+                        <div class="form-group row">
+                            <label class="col-sm-2" for="label">Injuries Reported</label>
+                            <div class="col-sm-3">
+                                <input type="number" min="0" step="1" class="form-control"  name="injuries" id="injuries" value="<?php echo $_main_data->get_injuries(); ?>" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <label class="col-sm-2" for="label">Fatalities Reported</label>
+                            <div class="col-sm-3">
+                                <!--<?php echo $_main_data->get_fatalities(); ?>-->
+                                <input type="number" min="0" step="1" class="form-control"  name="fatalities" id="fatalities" value="<?php echo $_main_data->get_fatalities(); ?>" required>
+                            </div>
+                        </div>
+                    
+                        <div class="form-group row">
+                            <label class="col-sm-2" for="extinguisher">Fire Extinguisher Used</label>
+                            <div class="col-sm-10">
+
+                                <!--Extinguisher: <?php echo $_main_data->get_extinguisher(); ?>-->
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="extinguisher" id="extinguisher_0" value="0" <?php if(!$_main_data->get_extinguisher()) echo ' checked ';?> required>
+                                    <label class="form-check-label" for="extinguisher_0">No</label>
+                                </div>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="extinguisher" id="extinguisher_1" value="0" <?php if($_main_data->get_extinguisher()) echo ' checked ';?> required>
+                                    <label class="form-check-label" for="extinguisher_1">Yes</label>
+                                </div>
+                            </div>
+                        </div>
+                    
                     	<div class="form-group row">
                             <label class="col-sm-2" for="cause">Cause of Incident</label>
                             <div class="col-sm-10"> 
@@ -621,39 +654,6 @@
                                         }
                                     ?>
                                 </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group row">
-                            <label class="col-sm-2" for="extinguisher">Fire Extinguisher Used</label>
-                            <div class="col-sm-10">
-
-                                <!--Extinguisher: <?php echo $_main_data->get_extinguisher(); ?>-->
-
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="extinguisher" id="extinguisher_0" value="0" <?php if(!$_main_data->get_extinguisher()) echo ' checked ';?> required>
-                                    <label class="form-check-label" for="extinguisher_0">No</label>
-                                </div>
-
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="extinguisher" id="extinguisher_1" value="0" <?php if($_main_data->get_extinguisher()) echo ' checked ';?> required>
-                                    <label class="form-check-label" for="extinguisher_1">Yes</label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group row">
-                            <label class="col-sm-2" for="label">Injuries</label>
-                            <div class="col-sm-3">
-                                <input type="number" min="0" step="1" class="form-control"  name="injuries" id="injuries" value="<?php echo $_main_data->get_injuries(); ?>" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group row">
-                            <label class="col-sm-2" for="label">Fatalities</label>
-                            <div class="col-sm-3">
-                                <!--<?php echo $_main_data->get_fatalities(); ?>-->
-                                <input type="number" min="0" step="1" class="form-control"  name="fatalities" id="fatalities" value="<?php echo $_main_data->get_fatalities(); ?>" required>
                             </div>
                         </div>
                         
