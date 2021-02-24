@@ -23,19 +23,32 @@
         
         public function __construct() 
 		{		
-			/* Iterate through each class variable. */
-       		foreach($this as $key => $value) 
-			{			
-				/* 
-                * If we can find a matching a post var with key matching
-				* key of current object var, set object var to the post value. 
-				*/
-                if(isset($_POST[$key]))
-				{					
-					$this->$key = $_POST[$key];           						
-				}
-			}	
+			$this->populate_from_request();	
 	 	}
+        
+        // Populate members from $_REQUEST.
+		public function populate_from_request($prefix = 'set_')
+		{		
+			// Interate through each class method.
+			foreach(get_class_methods($this) as $method) 
+			{		
+				$key = substr($method, 4); //str_replace($prefix, '', $method);
+							
+				// If there is a request var with key matching
+				// current method name, then the current method 
+				// is a set mutator for this request var. Run 
+				// it (the set method) with the request var. 
+				if(isset($_REQUEST[$key]))
+				{					
+					$this->$method($_REQUEST[$key]);					
+				}
+			}			
+		}
+        
+        public function set_filter_like($value)
+        {
+            $this->filter_like = $value;
+        }
         
         public function get_filter_like()
         {
@@ -83,8 +96,7 @@
         }
     }
 		
-	$request_data = new request_data();
-	
+	$request_data = new request_data();	
 	 
     $sql_string = 'EXEC dc_flashpoint_building_list_simple :filter_like';	
 	
@@ -92,7 +104,7 @@
     {   
         $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
 		
-	    $dbh_pdo_statement->bindValue(':filter_like', 'uk', \PDO::PARAM_STR);		
+	    $dbh_pdo_statement->bindValue(':filter_like', $request_data->get_filter_like(), \PDO::PARAM_STR);		
         $dbh_pdo_statement->execute();
     }
     catch(\PDOException $e)
