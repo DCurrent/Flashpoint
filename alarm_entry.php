@@ -78,12 +78,7 @@
             $dbh_pdo_statement->bindParam(':id', $_main_data->get_id(), \PDO::PARAM_STR);
 
             $rowcount = $dbh_pdo_statement->execute();
-            ////
             
-			//$query->set_sql('{call fire_alarm_delete(@id = ?)}');			
-			
-			//$query->set_params(array(array($_main_data->get_id(), SQLSRV_PARAM_IN)));
-			//$query->query();
 			
 			/* Refrsh page to the previous record. */
 			header('Location: '.$_SERVER['PHP_SELF']);			
