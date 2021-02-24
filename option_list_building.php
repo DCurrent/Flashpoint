@@ -45,6 +45,15 @@
 			}			
 		}
         
+        /*
+        * Acts as listener for a field 
+        * named "building_filter".
+        */
+        public function set_building_filter($value)
+        {
+            $this->filter_like = $value;
+        }
+        
         public function set_filter_like($value)
         {
             $this->filter_like = $value;
