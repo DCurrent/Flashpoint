@@ -402,18 +402,18 @@
                 	<legend>Location</legend>
                     
                     <div class="form-group row">
-                        <label class="col-sm-2" for="building_code">Facility</label>
+                        <label class="col-sm-2" for="building_code">Building</label>
                         <div class="col-sm-10">
                             <select name="building_code" 
                                 id="building_code" 
                                 data-current="<?php //echo $post->get_facility(); ?>" 
-                                data-source-url="../../libraries/inserts/facility.php" 
-                                data-extra-options='<option value="">Select Facility</option>'
+                                data-source-url="option_list_building.php" 
+                                data-extra-options='<option value="">Select Building</option>'
                                 data-col_order="<?php echo 2; //FACILITY_COL_ORDER::CODE_NAME_ADDRESS; ?>"
                                 data-grouped="1"
                                 class="room_search form-control">
                                     <!--This option is for valid HTML5; it is overwritten on load.--> 
-                                    <option value="">Select Facility</option>                                    
+                                    <option value="">Select Building</option>                                    
                                     <!--Options will be populated on load via jquery.-->                                 
                             </select>
                         </div>
@@ -736,7 +736,10 @@
             <?php echo $obj_navigation_main->get_markup_footer(); ?>
         </div><!--container-->    
         
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script
+			  src="https://code.jquery.com/jquery-3.5.1.min.js"
+			  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+			  crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     
@@ -745,12 +748,13 @@
 
         
     <script>
-    $(document).ready(function()
-     {
-
-         $("#dtBox").DateTimePicker();
-
-     });
+        
+        $(document).ready(function(event){				
+				
+                /* Populate the building codes. */
+				options_update(event, null, '#building_code');
+					
+			});
         
   $('.room_search').change(function(event)
     {	
