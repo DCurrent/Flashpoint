@@ -92,84 +92,8 @@
 			
 			$file_name = NULL;
 			
-			/* 
-            * Save the record. Saving main record is straight forward. We’ll run the populate method on our 
-			* main data object which will gather up post values. Then we can run a query to merge the values into 
-			* database table. We’ll then get the id from saved record (since we are using a surrogate key, the ID
-			* should remain static unless this is a brand new record). 
-			*
-			* If necessary we will then save any sub records (see each for details).
-			*
-			* Finally, we redirect to the current page using the freshly acquired id. That will ensure we have 
-			* always an up to date ID for our forms and navigation system.			
-		    */
-            
-			/* Populate the object from post values. */
-			$_main_data->populate_from_request();
 			
-			$_main_data_label = $_main_data->get_label(); 
-		
-			/* Call update stored procedure. */
-			$query->set_sql('{call fire_alarm_update(@id 			= ?,														 
-													@label 			= ?,
-													@details 		= ?,
-													@log_update 	= ?, 
-													@log_update_by 	= ?, 
-													@log_update_ip 	= ?,
-													@building_code 	= ?,
-													@room_code 		= ?,																										 
-													@time_reported 	= ?,
-													@time_silenced	= ?,
-													@time_reset		= ?,
-													@report_device_pull 		= ?,
-													@report_device_sprinkler 	= ?,
-													@report_device_smoke 		= ?,
-													@report_device_stove		= ?,
-                                                    @report_device_911          = ?,
-													@cause			= ?,
-													@occupied		= ?,
-													@evacuated		= ?,
-													@notified		= ?,
-													@fire			= ?,
-													@extinguisher	= ?,
-													@injuries		= ?,
-													@fatalities		= ?,
-													@injury_desc	= ?,
-													@property_damage = ?,
-													@responsible_party = ?,
-													@public_details = ?,
-													@status			= ?)}');
-						
-												
-			$params = array(array($_main_data->get_id(), 		SQLSRV_PARAM_IN),
-						array($_main_data->get_label(), 		SQLSRV_PARAM_IN),						
-						array($_main_data->get_details(), 		SQLSRV_PARAM_IN),
-						array(date('Y-m-d H:i:s'), 					SQLSRV_PARAM_IN),
-						array($access_obj->get_account(), 		SQLSRV_PARAM_IN),
-						array($access_obj->get_ip(), 			SQLSRV_PARAM_IN),
-						array($_main_data->get_building_code(), SQLSRV_PARAM_IN),
-						array($_main_data->get_room_code(), 	SQLSRV_PARAM_IN),
-						array($_main_data->get_time_reported(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_time_silenced(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_time_reset(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_report_device_pull(),		SQLSRV_PARAM_IN),
-						array($_main_data->get_report_device_sprinkler(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_report_device_smoke(), 		SQLSRV_PARAM_IN),
-						array($_main_data->get_report_device_stove(),		SQLSRV_PARAM_IN),
-                        array($_main_data->get_report_device_911(),         SQLSRV_PARAM_IN),
-						array($_main_data->get_cause(),			SQLSRV_PARAM_IN),
-						array($_main_data->get_occupied(),		SQLSRV_PARAM_IN),
-						array($_main_data->get_evacuated(),		SQLSRV_PARAM_IN),
-						array($_main_data->get_notified(),		SQLSRV_PARAM_IN),
-						array($_main_data->get_fire(),			SQLSRV_PARAM_IN),
-						array($_main_data->get_extinguisher(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_injuries(),		SQLSRV_PARAM_IN),
-						array($_main_data->get_fatalities(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_injury_desc(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_property_damage(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_responsible_party(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_public_details(),	SQLSRV_PARAM_IN),
-						array($_main_data->get_status(),		SQLSRV_PARAM_IN));
+            			
 			
 			//var_dump($params);
 			
@@ -210,11 +134,116 @@
 			/* Did all data verify? */
 			if($valid === TRUE)
 			{
-				$query->set_params($params);			
-				$query->query();
+                /* 
+                * Save the record. Saving main record is straight forward. We’ll run the populate method on our 
+                * main data object which will gather up post values. Then we can run a query to merge the values into 
+                * database table. We’ll then get the id from saved record (since we are using a surrogate key, the ID
+                * should remain static unless this is a brand new record). 
+                *
+                * If necessary we will then save any sub records (see each for details).
+                *
+                * Finally, we redirect to the current page using the freshly acquired id. That will ensure we have 
+                * always an up to date ID for our forms and navigation system.			
+                */
+
+                /* Populate the object from post values. */
+                $_main_data->populate_from_request();
+
+                $_main_data_label = $_main_data->get_label(); 
+
+                /* 
+                * Start transaction, prepare SQL string 
+                * and bind parameters. 
+                */    
+                
+                $dc_yukon_connection->beginTransaction();
+                     
+                try
+                {                           
+                    $sql_string = 'EXEC fire_alarm_delete :id, 
+                                                        :label,
+                                                        :details,
+                                                        :log_update,
+                                                        :log_update_by,
+                                                        :log_update_ip,
+                                                        :building_code,
+                                                        :room_code,
+
+                                                        :time_reported,
+                                                        :time_slienced,
+                                                        :time_reset,
+                                                        :report_device_pull,
+                                                        :report_device_sprinkler,
+                                                        :report_device_smoke,
+                                                        :report_device_911,
+                                                        :cause,
+                                                        :occupied,
+                                                        :evacuated,
+                                                        :notified,
+                                                        :fire,
+                                                        :extinguisher,
+                                                        :injuries,
+                                                        :fatalities,
+                                                        :injury_desc,
+                                                        :property_damage,
+                                                        :responsible_party,
+                                                        :public_details,
+                                                        :status';
+
+                    $dbh_pdo_statement = $dc_yukon_connection->prepare($sql_string);
+
+                    $dbh_pdo_statement->bindParam(':id', $_main_data->get_id(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':label', $_main_data->get_label(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':details', $_main_data->get_details(), \PDO::PARAM_STR);						
+                    $dbh_pdo_statement->bindParam(':log_update', date('Y-m-d H:i:s'), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':log_update_by', $access_obj->get_account(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':log_update_ip', $access_obj->get_ip(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':building_code', $_main_data->get_building_code(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':room_code', $_main_data->get_room_code(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':time_reported', $_main_data->get_time_reported(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':time_slienced', $_main_data->get_time_silenced(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':time_reset', $_main_data->get_time_reset(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':report_device_pull', $_main_data->get_report_device_pull(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':report_device_sprinkler', $_main_data->get_report_device_sprinkler(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':report_device_smoke', $_main_data->get_report_device_smoke(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':report_device_911', $_main_data->get_report_device_911(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':cause', $_main_data->get_cause(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':occupied', $_main_data->get_occupied(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':evacuated', $_main_data->get_evacuated(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':notified', $_main_data->get_notified(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':fire', $_main_data->get_fire(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':extinguisher', $_main_data->get_extinguisher(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':injuries', $_main_data->get_injuries(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':fatalities', $_main_data->get_fatalities(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':injury_desc', $_main_data->get_injury_desc(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':property_damage', $_main_data->get_property_damage(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':responsible_party', $_main_data->get_responsible_party(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':public_details', $_main_data->get_public_details(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindParam(':status', $_main_data->get_status(), \PDO::PARAM_STR);
+                }
+                catch(\PDOException $e)
+                {
+                    $dc_yukon_connection->rollBack();
+                    die('Sql set up error: '.$e->getMessage());
+                }
+                
+               
+                /*
+                * Execute the prepared query, and roll it back 
+                * if somethign blows up.
+                */
+                try
+                {                
+                    $rowcount = $dbh_pdo_statement->execute();
+                }
+                catch(\PDOException $e)
+                {
+                    $dc_yukon_connection->rollBack();
+                    die('Sql set up error: '.$e->getMessage());
+                }
 				
-				$query->get_line_params()->set_class_name('class_fire_alarm_data');
-				$_main_data = $query->get_line_object();
+				//$query->get_line_params()->set_class_name('class_fire_alarm_data');
+				//$_main_data = $query->get_line_object();
 				
 				$dialog .= '<p class="alert alert-success">Your incident report was successfully entered. You may enter another report below or leave this page.</p>';
 			
@@ -234,7 +263,7 @@
 				if(MAILING::BCC)	$headers[] = "Bcc: ".MAILING::BCC;
 				if(MAILING::CC) 	$headers[] = "Cc: ".MAILING::CC;	
 
-				mail($address, MAILING::SUBJECT.' - Incident Alert', $body, implode("\r\n", $headers));
+				//mail($address, MAILING::SUBJECT.' - Incident Alert', $body, implode("\r\n", $headers));
 			}
 			
 			break;			
