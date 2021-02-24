@@ -38,26 +38,30 @@ function options_update($event, $source, $element_sel, $form_sel, $data_param) {
 	
 	$label = $("label[for='" + $element.attr('id') + "']");
 	
-	// Get form object.
+	/* Get form object. */
 	$form_sel = $form_sel || $($element).closest('form');
 	$form = $($form_sel);
 	
-	// Get progress element object.
+	/* Get progress element object. */
 	$progress = $($element_sel + '_progress');
 		
-	// Get source url (using same method as element selector above).
-	// If the source is blank, try to get it from the element's data attribute.
-	$source = $source || $element.data('source-url');	
+	/* 
+    * Get source url (using same method as element selector above).
+	* If the source is blank, try to get it from the element's data attribute.
+	*/
+    $source = $source || $element.data('source-url');	
 	
 	//alert($source);
 	
-	// Show load progress.
+	/* Show load progress. */
 	$progress.show();
 	
-	// To accomidate different settings and situations without needing a ton of source pages
-	// we'll send the extra parameters as POST data by adding hidden fields. 
-		
-	// First let's get the data attributes.	 
+	/*
+    * To accomidate different settings and situations without needing a ton of source pages
+	* we'll send the extra parameters as POST data by adding hidden fields. 
+	*/
+    
+	/* First let's get the data attributes.	*/
 	$data = $element.data();
 	
 	if(Array.isArray($data_param) && Array.isArray($data))
@@ -73,31 +77,34 @@ function options_update($event, $source, $element_sel, $form_sel, $data_param) {
 			.attr('name', i)
 			.attr('value', $data[i]);
 		
-		// Debugging
+		/* Debugging */
 		// alert("attr: " + $append.attr('name') + ', value: ' + $append.attr('value'));
 
 		$form.append($append);
 	}
 	
-	// Hide main element and its label.
+	/* Hide main element and its label. */
 	$element.hide();	
 	$label.hide();		
 	
-	// Post to source page with data from form.
+	/* Post to source page with data from form. */
 	$posting = $.post($source, $form.serialize());	
 	
-	// Posting (loading) complete?
+	/* Posting (loading) complete? */
 	$posting.done(function(data) 
 	{		
 		$element.empty();
 	
-		// Add content from source to element.
+		/* 
+        * Add content from source to element
+        * with any manually included data. 
+        */
 		$element.append($element.attr('data-extra-options') + data);		
 		
-		// Hide the load progress.
+		/* Hide the load progress. */
 		$progress.hide();
 		
-		// Show and enable element/label.
+		/* Show and enable element/label. */
 		$element.prop("disabled", false);
 		$element.show();
 		$label.show();
