@@ -43,9 +43,10 @@ class Connect implements iConnect
     private $statement = NULL;
     
 			
-    /* 
-    * Create and return a linked list consisting of 
-    * all line objects from database query.
+    /*
+    * Run a query, then create and return 
+    * a double linked list consisting of 
+    * line objects from query result.
 	*/
     public function get_row_object_list($sql_string, $class_name, $constructor_tags = array())
 	{
@@ -80,7 +81,14 @@ class Connect implements iConnect
 		/* Return linked list object. */
 		return $result;
 	}
-        
+    
+    /*
+    * Run an action query using transactions.
+    */
+    //public function run_action_query()
+    
+    
+    
 	public function __construct(ConnectConfig $connect = NULL)
 	{			
 		/* 

@@ -70,11 +70,20 @@
 			/* Populate the object from post values. */
 			$_main_data->populate_from_request();
 				
-			/* Call and execute delete SP. */
-			$query->set_sql('{call fire_alarm_delete(@id = ?)}');			
+			/* Call and execute delete SP. */            
+            $sql_string = 'EXEC fire_alarm_delete :id';
 			
-			$query->set_params(array(array($_main_data->get_id(), SQLSRV_PARAM_IN)));
-			$query->query();
+            $dbh_pdo_statement = $dc_yukon_connection->prepare($sql_string);
+
+            $dbh_pdo_statement->bindParam(':id', $_main_data->get_id(), \PDO::PARAM_STR);
+
+            $rowcount = $dbh_pdo_statement->execute();
+            ////
+            
+			//$query->set_sql('{call fire_alarm_delete(@id = ?)}');			
+			
+			//$query->set_params(array(array($_main_data->get_id(), SQLSRV_PARAM_IN)));
+			//$query->query();
 			
 			/* Refrsh page to the previous record. */
 			header('Location: '.$_SERVER['PHP_SELF']);			
@@ -453,7 +462,7 @@
                                 placeholder	="Date and Time" 
                                 data-role="datebox" 
                                 data-datebox-mode="datetimebox"
-                                data-options='{"useFocus":"true", "displayDropdownPosition":"bottomLeft"}'
+                                data-options='{"useFocus":"true", "displayDropdownPosition":"bottomLeft", "useClearButton":"true"}'
                             	value="<?php echo $_main_data->get_time_reported(); ?>"
                                 required>
                         </div>                        
@@ -471,7 +480,7 @@
                                 placeholder	="Date and Time" 
                                 data-role="datebox" 
                                 data-datebox-mode="datetimebox"
-                                data-options='{"useFocus":"true", "displayDropdownPosition":"bottomLeft"}'
+                                data-options='{"useFocus":"true", "displayDropdownPosition":"bottomLeft", "useClearButton":"true"}'
                             	value="<?php echo $_main_data->get_time_silenced(); ?>"
                                 required>
                         </div>                        
@@ -487,7 +496,7 @@
                                 placeholder	="Date and Time" 
                                 data-role="datebox" 
                                 data-datebox-mode="datetimebox"
-                                data-options='{"useFocus":"true", "displayDropdownPosition":"bottomLeft"}'
+                                data-options='{"useFocus":"true", "displayDropdownPosition":"bottomLeft", "useClearButton":"true"}'
                             	value="<?php echo $_main_data->get_time_reset(); ?>"
                                 required>
                         </div>                        
