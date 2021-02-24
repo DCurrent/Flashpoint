@@ -134,7 +134,7 @@
             
             ?>
             <option value="<?php echo $_row_object->get_building_code(); ?>"><?php 
-            echo $_row_object->get_building_code().' - '.ucwords(strtolower($_row_object->get_building_name().' | '.$_row_object->get_address_street())).'&nbsp;'.$_row_object->get_address_zip(); ?></option>
+            echo $_row_object->get_building_code().' - '.ucwords(strtolower($_row_object->get_building_name().' - '.$_row_object->get_address_street())).'&nbsp;'.$_row_object->get_address_zip(); ?></option>
             <?php 
         }
     }
