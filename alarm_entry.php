@@ -402,6 +402,13 @@
                 	<legend>Location</legend>
                     
                     <div class="form-group row">
+                        <label class="col-sm-2" for="building_filter">Building Search</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control building_filter"  name="building_filter" id="label" placeholder="Type a few letters of name or address to filter the building options." value="">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
                         <label class="col-sm-2" for="building_code">Building</label>
                         <div class="col-sm-10">
                             <select name="building_code" 
@@ -411,7 +418,7 @@
                                 data-extra-options='<option value="">Select Building</option>'
                                 data-col_order="<?php echo 2; //FACILITY_COL_ORDER::CODE_NAME_ADDRESS; ?>"
                                 data-grouped="1"
-                                class="room_search form-control">
+                                class="room_filter form-control">
                                     <!--This option is for valid HTML5; it is overwritten on load.--> 
                                     <option value="">Select Building</option>                                    
                                     <!--Options will be populated on load via jquery.-->                                 
@@ -756,10 +763,16 @@
 					
 			});
         
-  $('.room_search').change(function(event)
-    {	
-		//options_update(event, null, '#room_code');	
-	});
+        
+        $('.building_filter').change(function(event)
+        {
+            options_update(event, null, '#building_code');	
+        });
+        
+      $('.room_filter').change(function(event)
+        {	
+            options_update(event, null, '#room_code');	
+        });
   
   $(document).ready(function(event)
     {
