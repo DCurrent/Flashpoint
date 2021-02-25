@@ -28,6 +28,8 @@
 	/* Record navigation. */
 	$obj_navigation_rec = new dc\record_navigation\RecordMenu();	
 	
+    echo '<!-- $obj_navigation_rec->get_id()'.$obj_navigation_rec->get_id().' -->';
+
 	/* Prepare redirect url with variables. */
 	$url_query	= new dc\fraser\URLFix();
 	$url_query->set_data('action', $obj_navigation_rec->get_action());
@@ -92,15 +94,22 @@
 			
 			$file_name = NULL;
 			
+			/* 
+            * Populate the object from post values
+            * and remove 'T' insert date picker adds 
+            * between date and time. 
+            */  
+            $_main_data->populate_from_request();
 			
-            			
-			
-			//var_dump($params);
-			
+            $_main_data->set_time_reported(str_replace('T', ' ', $_main_data->get_time_reported()));
+            $_main_data->set_time_silenced(str_replace('T', ' ', $_main_data->get_time_silenced()));
+            $_main_data->set_time_reset(str_replace('T', ' ', $_main_data->get_time_reset()));
+            
 			/* Let's do some validation before we execute the query. */
 			$dialog = NULL;
 			$valid	= TRUE;
 			
+            /*
 			$date = DateTime::createFromFormat('Y-m-d H:i', $_main_data->get_time_reported());
 			$date_errors = DateTime::getLastErrors();
 			if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) 
@@ -114,7 +123,7 @@
 			if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) 
 			{
 				$valid 	= FALSE;	
-				$dialog .= '<p class="alert alert-danger">Time Silenced is not a valid date/time. Please enter the date and time as yyyy-mm-dd hh:mm (ex. 2015-01-23 23:45).</p>';
+				$dialog .= '<p class="alert alert-danger">Time Silenced ('.str_replace('T', ' ', $_main_data->get_time_silenced()).') is not a valid date/time. Please enter the date and time as yyyy-mm-dd hh:mm (ex. 2015-01-23 23:45).</p>';
 			}
 			
 			$date = DateTime::createFromFormat('Y-m-d H:i', $_main_data->get_time_reset());
@@ -122,15 +131,15 @@
 			if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) 
 			{
 				$valid 	= FALSE;	
-				$dialog .= '<p class="alert alert-danger">Time Reset is not a valid date/time. Please enter the date and time as yyyy-mm-dd hh:mm (ex. 2015-01-23 23:45).</p>';
+				$dialog .= '<p class="alert alert-danger">Time Reset ('.$_main_data->get_time_reset().')is not a valid date/time. Please enter the date and time as yyyy-mm-dd hh:mm (ex. 2015-01-23 23:45).</p>';
 			}
-			
+			*/
 			if (!$_main_data->get_room_code() || $_main_data->get_room_code() == '') 
 			{
 				$valid 	= FALSE;	
-				$dialog .= '<p class="alert alert-danger">You must include the location. Please select a facility and area.</p>';
+				$dialog .= '<p class="alert alert-danger">You must include the location ('.$_main_data->get_room_code().'). Please select a facility and area.</p>';
 			}
-			
+			$valid = TRUE;
 			/* Did all data verify? */
 			if($valid === TRUE)
 			{
@@ -144,10 +153,7 @@
                 *
                 * Finally, we redirect to the current page using the freshly acquired id. That will ensure we have 
                 * always an up to date ID for our forms and navigation system.			
-                */
-
-                /* Populate the object from post values. */
-                $_main_data->populate_from_request();
+                */                
 
                 $_main_data_label = $_main_data->get_label(); 
 
@@ -156,25 +162,26 @@
                 * and bind parameters. 
                 */    
                 
-                $dc_yukon_connection->beginTransaction();
+                $dc_yukon_connection->get_member_connection()->beginTransaction();
                      
-                try
-                {                           
-                    $sql_string = 'EXEC fire_alarm_delete :id, 
+                try                   
+                {   
+                       
+                   $sql_string = 'EXEC fire_alarm_update :id, 
                                                         :label,
-                                                        :details,
-                                                        :log_update,
+                                                        :details,                                                        
+                                                        :log_update,                                                        
                                                         :log_update_by,
                                                         :log_update_ip,
                                                         :building_code,
-                                                        :room_code,
-
+                                                        :room_code,                                                        
                                                         :time_reported,
                                                         :time_slienced,
-                                                        :time_reset,
+                                                        :time_reset,                                                        
                                                         :report_device_pull,
                                                         :report_device_sprinkler,
                                                         :report_device_smoke,
+                                                        :report_device_stove,
                                                         :report_device_911,
                                                         :cause,
                                                         :occupied,
@@ -189,59 +196,68 @@
                                                         :responsible_party,
                                                         :public_details,
                                                         :status';
-
-                    $dbh_pdo_statement = $dc_yukon_connection->prepare($sql_string);
-
-                    $dbh_pdo_statement->bindParam(':id', $_main_data->get_id(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':label', $_main_data->get_label(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':details', $_main_data->get_details(), \PDO::PARAM_STR);						
-                    $dbh_pdo_statement->bindParam(':log_update', date('Y-m-d H:i:s'), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':log_update_by', $access_obj->get_account(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':log_update_ip', $access_obj->get_ip(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':building_code', $_main_data->get_building_code(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':room_code', $_main_data->get_room_code(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':time_reported', $_main_data->get_time_reported(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':time_slienced', $_main_data->get_time_silenced(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':time_reset', $_main_data->get_time_reset(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':report_device_pull', $_main_data->get_report_device_pull(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':report_device_sprinkler', $_main_data->get_report_device_sprinkler(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':report_device_smoke', $_main_data->get_report_device_smoke(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':report_device_911', $_main_data->get_report_device_911(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':cause', $_main_data->get_cause(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':occupied', $_main_data->get_occupied(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':evacuated', $_main_data->get_evacuated(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':notified', $_main_data->get_notified(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':fire', $_main_data->get_fire(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':extinguisher', $_main_data->get_extinguisher(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':injuries', $_main_data->get_injuries(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':fatalities', $_main_data->get_fatalities(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':injury_desc', $_main_data->get_injury_desc(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':property_damage', $_main_data->get_property_damage(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':responsible_party', $_main_data->get_responsible_party(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':public_details', $_main_data->get_public_details(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindParam(':status', $_main_data->get_status(), \PDO::PARAM_STR);
+                    
+                    $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
+                    
+                    $dbh_pdo_statement->bindValue(':id', -1, \PDO::PARAM_INT);                    
+                    $dbh_pdo_statement->bindValue(':label', $_main_data->get_label(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':details', $_main_data->get_details(), \PDO::PARAM_STR);						
+                    $dbh_pdo_statement->bindValue(':log_update', date('Y-m-d H:i:s'), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':log_update_by', $access_obj->get_account(), \PDO::PARAM_STR);
+                    
+                    $dbh_pdo_statement->bindValue(':log_update_ip', $access_obj->get_ip(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':building_code', $_main_data->get_building_code(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':room_code', $_main_data->get_room_code(), \PDO::PARAM_STR);
+                   
+                    $dbh_pdo_statement->bindValue(':time_reported', $_main_data->get_time_reported(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':time_slienced', $_main_data->get_time_silenced(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':time_reset', $_main_data->get_time_reset(), \PDO::PARAM_STR);
+                    
+                    $dbh_pdo_statement->bindValue(':report_device_pull', $_main_data->get_report_device_pull(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':report_device_sprinkler', $_main_data->get_report_device_sprinkler(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':report_device_smoke', $_main_data->get_report_device_smoke(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':report_device_stove', $_main_data->get_report_device_stove(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':report_device_911', $_main_data->get_report_device_911(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':cause', $_main_data->get_cause(), \PDO::PARAM_INT);
+                    $dbh_pdo_statement->bindValue(':occupied', $_main_data->get_occupied(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':evacuated', $_main_data->get_evacuated(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':notified', $_main_data->get_notified(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':fire', $_main_data->get_fire(), \PDO::PARAM_INT);
+                    $dbh_pdo_statement->bindValue(':extinguisher', $_main_data->get_extinguisher(), \PDO::PARAM_BOOL);
+                    $dbh_pdo_statement->bindValue(':injuries', $_main_data->get_injuries(), \PDO::PARAM_INT);
+                    $dbh_pdo_statement->bindValue(':fatalities', $_main_data->get_fatalities(), \PDO::PARAM_INT);
+                    $dbh_pdo_statement->bindValue(':injury_desc', $_main_data->get_injury_desc(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':property_damage', $_main_data->get_property_damage(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':responsible_party', $_main_data->get_responsible_party(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':public_details', $_main_data->get_public_details(), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':status', $_main_data->get_status(), \PDO::PARAM_INT);                    
+                    
                 }
                 catch(\PDOException $e)
                 {
-                    $dc_yukon_connection->rollBack();
+                    $dc_yukon_connection->get_member_connection()->rollBack();
                     die('Sql set up error: '.$e->getMessage());
                 }
-                
                
                 /*
                 * Execute the prepared query, and roll it back 
-                * if somethign blows up.
+                * if something blows up.
                 */
                 try
                 {                
                     $rowcount = $dbh_pdo_statement->execute();
+                    
+                    $arr = $dbh_pdo_statement->errorInfo();
+                    print_r($arr);
                 }
                 catch(\PDOException $e)
                 {
-                    $dc_yukon_connection->rollBack();
+                    $dc_yukon_connection->get_member_connection()->rollBack();
                     die('Sql set up error: '.$e->getMessage());
                 }
 				
+                $dc_yukon_connection->get_member_connection()->commit();
+                
 				//$query->get_line_params()->set_class_name('class_fire_alarm_data');
 				//$_main_data = $query->get_line_object();
 				
@@ -455,7 +471,7 @@
                             </div>
                             
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="occupied" id="occupied_1" value="0" <?php if($_main_data->get_occupied()) echo ' checked ';?> required>
+                                <input class="form-check-input" type="radio" name="occupied" id="occupied_1" value="1" <?php if($_main_data->get_occupied()) echo ' checked ';?> required>
                                 <label class="form-check-label" for="occupied_1">Yes</label>
                             </div>
                         </div>
@@ -472,7 +488,7 @@
                             </div>
                             
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="evacuated" id="evacuated_1" value="0" <?php if($_main_data->get_evacuated()) echo ' checked ';?> required>
+                                <input class="form-check-input" type="radio" name="evacuated" id="evacuated_1" value="1" <?php if($_main_data->get_evacuated()) echo ' checked ';?> required>
                                 <label class="form-check-label" for="evacuated_1">Yes</label>
                             </div>
                         </div>
@@ -555,6 +571,11 @@
                                 <input class="form-check-input" type="checkbox" name="report_device_stove" id="report_device_stove" value="1" <?php if($_main_data->get_report_device_stove() == TRUE) echo ' checked '; ?>>
                                 <label class="form-check-label" for="report_device_stove">Alternate Suppression</label>
                             </div>
+                            
+                            <div class="form-check form-check">
+                                <input class="form-check-input" type="checkbox" name="report_device_911" id="report_device_911" value="1" <?php if($_main_data->get_report_device_911() == TRUE) echo ' checked '; ?>>
+                                <label class="form-check-label" for="report_device_911">911</label>
+                            </div>
                         </div>
                     </div>              
                     
@@ -569,7 +590,7 @@
                             </div>
                             
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="notified" id="notified_1" value="0" <?php if($_main_data->get_notified()) echo ' checked ';?> required>
+                                <input class="form-check-input" type="radio" name="notified" id="notified_1" value="1" <?php if($_main_data->get_notified()) echo ' checked ';?> required>
                                 <label class="form-check-label" for="notified_1">Yes</label>
                             </div>
                         </div>
@@ -605,7 +626,7 @@
                                             }
                                             ?>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="fire" id="fire_<?php echo $_obj_data_list_type->get_id(); ?>" value="<?php echo $_obj_data_list_type->get_id(); ?>" <?php $selected; ?> required>
+                                                    <input class="form-check-input" type="radio" name="fire" id="fire_<?php echo $_obj_data_list_type->get_id(); ?>" value="<?php echo $_obj_data_list_type->get_id(); ?>" <?php echo $selected; ?> required>
                                                     <label class="form-check-label" for="fire_<?php echo $_obj_data_list_type->get_id(); ?>"><?php echo $_obj_data_list_type->get_label(); ?></label>
                                                 </div>                                          
                                             <?php										
@@ -642,7 +663,7 @@
                                 </div>
 
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="extinguisher" id="extinguisher_1" value="0" <?php if($_main_data->get_extinguisher()) echo ' checked ';?> required>
+                                    <input class="form-check-input" type="radio" name="extinguisher" id="extinguisher_1" value="1" <?php if($_main_data->get_extinguisher()) echo ' checked ';?> required>
                                     <label class="form-check-label" for="extinguisher_1">Yes</label>
                                 </div>
                             </div>
