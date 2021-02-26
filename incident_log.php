@@ -1,7 +1,7 @@
 <?php 		
 	
 	require(__DIR__.'/source/main.php');
-	
+
 	class class_filter
 	{
 		private
@@ -100,7 +100,7 @@
 	}
 	
 	// Prepare redirect url with variables.
-	$url_query	= new url_query;
+	$url_query	= new \dc\fraser\URLFix();
 		
 	// User access.
 	
@@ -120,13 +120,15 @@
 	$db = new class_db_connection($db_conn_set);
 	$query = new class_db_query($db);
 		
-	$paging = new class_paging;
+    $paging_config = new \dc\record_navigation\PagingConfig();
+    $paging_config->set_url_query_instance($url_query);
+	$paging = new \dc\record_navigation\Paging($paging_config);
 	
 	// Establish sorting object, set defaults, and then get settings
 	// from user (if any).
-	$sorting = new class_sort_control;
+	$sorting = new \dc\sorting\Sorting();
 	$sorting->set_sort_field(SORTING_FIELDS::CREATED);
-	$sorting->set_sort_order(SORTING_ORDER_TYPE::DECENDING);
+	$sorting->set_sort_order(\dc\sorting\SORTING_ORDER_TYPE::DECENDING);
 	$sorting->populate_from_request();
 	
 	$filter = new class_filter();
@@ -164,7 +166,7 @@
 	$query->set_params($params);
 	$query->query();
 	
-	$query->get_line_params()->set_class_name('class_fire_alarm_data');
+	$query->get_line_params()->set_class_name('data_fire_alarm');
 	$_obj_data_main_list = $query->get_line_object_list();
 
 	// Send control data from procedure to paging object.
@@ -183,16 +185,10 @@
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
         <title><?php echo APPLICATION_SETTINGS::NAME; ?> - Campus Fire Log</title>        
         
-         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
-        
-        <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        
-        <!-- Latest compiled JavaScript -->
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         
         <style>
 		
@@ -290,24 +286,17 @@
 				echo '<!--Page Time: '.$page_obj->time_elapsed().' seconds-->';
 			?>
         </div><!--container-->        
-    <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40196994-1', 'uky.edu');
-  ga('send', 'pageview');
-  
-  $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();
-});
-</script>
+    <script
+			  src="https://code.jquery.com/jquery-3.5.1.min.js"
+			  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+			  crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 </body>
 </html>
 
 <?php
-	// Collect and output page markup.
-	$page_obj->markup_from_cache();	
+	/* Collect and output page markup. */
+	$page_obj->markup_and_flush();	
 	$page_obj->output_markup();
 ?>

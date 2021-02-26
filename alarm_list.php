@@ -101,11 +101,10 @@
 	}
 	
 	// Prepare redirect url with variables.
-	$url_query	= new url_query;
+	$url_query	= new url_query;	
 	
-	// Start page cache.
-	$page_obj = new class_page_cache();
-	ob_start();		
+	/* Page caching. */
+	$page_obj = new \dc\Prudhoe\PageCache();		
 		
 	// Set up navigaiton.
 	$navigation_obj = new class_navigation();

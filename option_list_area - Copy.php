@@ -138,9 +138,8 @@
 	$request_data = new request_data();
 	
 	 
-    $sql_string_floor = 'SELECT DISTINCT floor FROM vw_uk_space_room WHERE facility = :filter_building_code ORDER BY floor';	
-	$_sql_string_room = 'SELECT barcode, room, useage_desc FROM vw_uk_space_room WHERE facility '.$sql_where.' AND floor = ?'
-        
+    $sql_string = 'EXEC dc_flashpoint_area_list_simple :filter_building_code';	
+	
     try
     {   
         $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
@@ -153,17 +152,6 @@
         die('Database error : '.$e->getMessage());
     }
     
-    $_row_object_floor = NULL;
-    $_row_obj_floor_list = new \SplDoublyLinkedList();	// Linked list object.
-
-    if(is_object($_row_obj_floor_list) === TRUE)
-    { 
-        for($_row_obj_floor_list->rewind(); $_row_obj_floor_list->valid(); $_row_obj_list->next())
-        {            
-            $_row_object_floor = $_row_obj_floor_list->current();
-        }
-    }
-
     /* 
     * Get every row as an object and 
     * push it into a double linked
@@ -209,52 +197,5 @@
             <?php 
         }
     }
-
-    // First let’s get a list of floors. Theoretically we could make this more efficient by just querying for the 
-	// max value and using a counter loop later, but some floors have mixed alphanumeric designations.	
-	$query->set_sql('SELECT DISTINCT floor FROM vw_uk_space_room WHERE facility '.$sql_where.' ORDER BY floor');	
-			
-	$query->set_params($params);
-	$query->query();		
-	$floors = $query->get_line_object_all();		
-	
-	// Now for each floor, we need a list of rooms.
-	foreach($floors as $floor)
-	{
-		// Add floor to parameter array.
-		$params[$floor_key] = $floor->floor;
-					
-		// Query for the room list.
-		$query->set_sql('SELECT barcode, room, useage_desc FROM vw_uk_space_room WHERE facility '.$sql_where.' AND floor = ?');
-		$query->set_params($params);		
-		$query->query();
-		
-		// Get all rows.
-		$rooms = $query->get_line_object_all();
-		
-		// Add the Floor as a an optgroup to markup.
-		$markup.='<optgroup label="Floor '.$floor->floor.'">'.PHP_EOL;
-		
-		// Get each room row object.
-		foreach ($rooms as $room)
-		{
-			$selected = NULL;
-			
-			// If the room use description from database wasn't blank, let's include it.
-			if($room->useage_desc) $use = ' - '.ucwords(strtolower($room->useage_desc));
-			
-			if($post->current && $post->current == $room->barcode)
-			{
-				$selected = ' selected ';
-			}
-			
-			// Add the completed option value string to markup.        	
-			$markup.='<option value="'.$room->barcode.'"'.$selected.'>'.$room->room.$use.'</option>'.PHP_EOL;		                       
-		}
-		
-		// Close the optgroup.
-		$markup.='</optgroup>'.PHP_EOL;
-	}
-
 
 ?>
