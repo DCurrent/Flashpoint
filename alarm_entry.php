@@ -439,15 +439,19 @@
                             </select>
                         </div>
                     </div> 
-                                   
+                                
+                    <!-- 
+                        Note there is an additional "outside" option 
+                        added by generation script.
+                    -->
                     <div class="form-group row">
                         <label class="col-sm-2" for="room_code">Area</label>
                         <div class="col-sm-10">
                             <select name="room_code" 
                                 id="room_code" 
                                 data-dc_options_update_value_current="<?php echo $_main_data->get_room_code(); ?>" 
-                                data-dc_options_update_source_url="../../libraries/inserts/room.php"                                 
-                                data-dc_options_update_prefix_options='<option value="">Select Room/Area/Lab</option><option value="<?php echo ROOM_SELECT::OUTSIDE; ?>">Outside</option>' 
+                                data-dc_options_update_source_url="option_list_area.php"                                 
+                                data-dc_options_update_prefix_options='<option value="">Select Room/Area/Lab</option>'
                                 class="room_code_search disable form-control" 
                                 disabled>                                        
                                     <!--Options will be populated/replaced on load via jquery.-->
@@ -781,9 +785,23 @@
                 /* Populate the building codes. */
 				options_update(event, '#building_code', 1);
             
-                /* Enables bootstrap tooltips.
-                * $('[data-toggle="tooltip"]').tooltip();
-			    */
+                /* 
+                * If the building and room are selected,
+                * then we need to load up the room options
+                * to allows current value to be pre-selected.
+                */
+                <?php
+                    if($_main_data->get_room_code() && $_main_data->get_building_code())
+                    {
+                ?>
+                options_update(event, '#room_code', 1);
+                <?php
+                    }
+                ?>
+            
+                /* Enables bootstrap tooltips. */
+                // $('[data-toggle="tooltip"]').tooltip();
+			    
             });
         
         

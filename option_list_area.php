@@ -13,6 +13,7 @@
     class request_data
     {
         private $filter_building_code;
+        private $selected = NULL;
         
         public function __construct() 
 		{		
@@ -47,6 +48,17 @@
         {
             return $this->filter_building_code;
         }
+        
+        public function get_selected()
+        {
+            return $this->selected;
+        }
+        
+        /* From options update script. */
+        public function set_value_current($value)
+        {
+            $this->selected = $value;
+        }
     }
 
     class area_data
@@ -59,6 +71,7 @@
         private $building_code = NULL;
         private $area_floor = NULL;
         
+        
         public function get_row_id()
         {
             return $this->row_id;
@@ -69,9 +82,24 @@
             return $this->building_name;
         }
         
+        public function set_building_name($value)
+        {
+            $this->building_name = $value;
+        }
+        
         public function get_area_id()
         {
             return $this->area_id;
+        }
+        
+        public function set_area_id($value)
+        {
+            $this->area_id = $value;
+        }
+        
+        public function set_barcode($value)
+        {
+            $this->barcode = $value;
         }
         
         public function get_barcode()
@@ -82,6 +110,11 @@
         public function get_useage_id()
         {
             return $this->useage_id;
+        }
+        
+        public function set_useage_desc($value)
+        {
+            $this->useage_desc = $value;
         }
         
         public function get_useage_desc()
@@ -98,6 +131,8 @@
         {
             return $this->area_floor;
         }
+        
+        
     }
 		
 	$request_data = new request_data();
@@ -126,6 +161,12 @@
     $_row_object = NULL;
     $_row_obj_list = new \SplDoublyLinkedList();	// Linked list object.
 
+    $_row_object = new area_data();
+    $_row_object->set_barcode(ROOM_SELECT::OUTSIDE);
+    $_row_object->set_area_id('NA');
+    $_row_object->set_useage_desc('Outside');
+    $_row_obj_list->push($_row_object);
+
     while($_row_object = $dbh_pdo_statement->fetchObject('area_data', array()))
     {       
         $_row_obj_list->push($_row_object);
@@ -136,6 +177,19 @@
         for($_row_obj_list->rewind(); $_row_obj_list->valid(); $_row_obj_list->next())
         {            
             $_row_object = $_row_obj_list->current();
+            
+            /* 
+            * We may already have a selection. If so 
+            * and the value matches value in this loop 
+            * iteration, let's generate the markup to 
+            * pre-select option in the broswer.
+            */
+            $selected_markup = NULL;
+            
+            if($_row_object->get_building_code() == $request_data->get_selected()) 
+            {
+                $selected_markup = 'selected';
+            }
             
             ?>
             <option value="<?php echo $_row_object->get_barcode(); ?>"><?php 
