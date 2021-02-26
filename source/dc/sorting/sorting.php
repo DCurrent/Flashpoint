@@ -15,8 +15,8 @@
 	abstract class SORTING_ORDER_MARKUP
 	{
 		const 		
-			ASCENDING	= '<span class="glyphicon glyphicon glyphicon-sort-by-alphabet"></span>',
-			DECENDING	= '<span class="glyphicon glyphicon glyphicon-sort-by-alphabet-alt"></span>',
+			ASCENDING	= '<span class="glyphicon glyphicon glyphicon-sort-by-alphabet"> &bigtriangledown;</span>',
+			DECENDING	= '<span class="glyphicon glyphicon glyphicon-sort-by-alphabet-alt"> &bigtriangleup;</span>',
 			NONE 		= '<span class="glyphicon glyphicon glyphicon-sort"></span>';
 	}
 	
