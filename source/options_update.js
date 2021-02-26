@@ -6,110 +6,126 @@
 * Replace value of element with content from secondary source. Mainly for
 * updating options in a child select list based on a parent value.
 *
-* To do: Would be nice to leverage dataset to acquire data attributes, but for now let's not 
-* be too snobby toward older browsers.
+* $event - Triggering event.
 *
-* $element_sel: Selector (ID or CSS) to child element element that will have its enclosed content 
-* updated . If omitted the value of calling element's 'data-child-selector' attribute will be used.
-*	 
-* $form_ref: Selector (ID or CSS) to form that post data will be taken from by $source to create
-* new content. If omitted	the calling element's parent form will be used.
+* $element_id: ID used to locate target element that will have its 
+* options updated.
 *
-* $source: URL that will deliver updated content. If omitted the vale of child (element_self) 
-* element's 'data-source-url' attribute will be used.
+* $use_current - If true, send the value_current data attribute
 *
-* $data: Array of values to add as hidden type form fields before posting. If omitted, target 
-* all of element's data attributes will be passed. 
 */
-function options_update($event, $source, $element_sel, $form_sel, $data_param) {	
+function options_update($event, $element_id, $use_current) {	
 	
 	"use strict";
 	
-	var $result		= null; // Return value.
-	var $element 	= null;	// Primary element. Contains content to update.
-	var $label		= null;	// Label of element with content to update
-	var $progress	= null;	// Element displayed in place of main element while source is loading.
-	var $form 		= null;	// Form that will create source data for options.
-	var $posting 	= null;	// Posting object.
-	var $data		= null; // Combined array of items to add as hidden type form elements before posting.
-		
-	$element_sel = $element_sel || $event.target.getAttribute('id');
-	$element = $($element_sel);
-	
-	$label = $("label[for='" + $element.attr('id') + "']");
-	
-	/* Get form object. */
-	$form_sel = $form_sel || $($element).closest('form');
-	$form = $($form_sel);
-	
-	/* Get progress element object. */
-	$progress = $($element_sel + '_progress');
-		
-	/* 
-    * Get source url (using same method as element selector above).
-	* If the source is blank, try to get it from the element's data attribute.
-	*/
-    $source = $source || $element.data('source-url');	
-	
-	//alert($source);
-	
-	/* Show load progress. */
-	$progress.show();
-	
+    const ELEMENT_DATA_PREFIX = 'dc_options_update_';
+    
+    var $append            = null; // Array of elements created and appended to form.
+	var $result            = null; // Return value.
+	var $element_main      = null; // Primary element. Contains content to update.
+	var $element_progress  = null; // Element displayed in place of main element while source is loading.
+    var $element_label     = null; // Label of element with content to update
+	var $form 		       = null; // Form that will create source data for options.
+	var $posting 	       = null; // Posting object.
+	var $data		       = null; // Combined array of items to add as hidden type form elements before posting.
+	var $source_url        = null; // URL to page that provides the option source markup.
+    
 	/*
-    * To accomidate different settings and situations without needing a ton of source pages
-	* we'll send the extra parameters as POST data by adding hidden fields. 
+    * Get the target element to update and the
+    * progress element using supplied ID. We assume 
+    * the progress element has same ID as target 
+    * element with a "_progress" suffix added.
+    *
+    * Once we have the target element pointer, we 
+    * can implicitly get its parent form and any
+    * attached label element.
+    */
+    
+    $element_main = $($element_id);
+	$element_progress = $($element_id + '_progress');
+    
+	$element_label = $("label[for='" + $element_main.attr('id') + "']");	
+	
+	$form = $($element_main).closest('form');
+		
+	/* Get source url from data attributes */
+    $source_url = $element_main.data(ELEMENT_DATA_PREFIX + 'source_url');	
+	
+	/* 
+    * It make take a few moments for the 
+    * source script to load options. We
+    * make the target element and its 
+    * label invisible while showing a 
+    * progress element that lets the
+    * user know what's happening.
+	*/
+    $element_progress.show();	
+	$element_main.hide();	
+	$element_label.hide();
+    
+	/*
+    * We need to send post data to the page that 
+    * generates new options. Instead of adding a 
+    * bunch of static parameters and trying to 
+    * send them manually, we'll use the target 
+    * element's data- attributes to create and 
+    * append hidden input fields. Then we can
+    * send the hidden input fields as post data
+    * to our option generation source page. 
 	*/
     
-	/* First let's get the data attributes.	*/
-	$data = $element.data();
-	
-	if(Array.isArray($data_param) && Array.isArray($data))
-	{
-		$data = $data.concat($data_param); 
-	}
-	
-	var $append = null;
-	
-	for(var i in $data)
-	{
-		$append = $('<input />').attr('type', 'hidden')
-			.attr('name', i)
+    $data = $element_main.data();
+    
+    for(var i in $data)
+	{       
+        $append = $('<input />').attr('type', 'hidden')
+			.attr('name', i.replace(ELEMENT_DATA_PREFIX,''))
 			.attr('value', $data[i]);
-		
-		/* Debugging */
-		// alert("attr: " + $append.attr('name') + ', value: ' + $append.attr('value'));
-
+                
+        /* 
+        * We don't always want to send the
+        * current value.
+		*/
+        if($append.attr('name') == 'value_current' && !$use_current)
+        {            
+            continue;
+        }
+                
 		$form.append($append);
 	}
+		
+	/* 
+    * Post to option generation source script. When
+    * the script is complete we can append its results
+    * to our target element.
+    */
+	$posting = $.post($source_url, $form.serialize());	
 	
-	/* Hide main element and its label. */
-	$element.hide();	
-	$label.hide();		
-	
-	/* Post to source page with data from form. */
-	$posting = $.post($source, $form.serialize());	
-	
-	/* Posting (loading) complete? */
-	$posting.done(function(data) 
+	$posting.done(function($post_results) 
 	{		
-		$element.empty();
+		$element_main.empty();
 	
 		/* 
-        * Add content from source to element
-        * with any manually included data. 
+        * - Append any manual prefix options. 
+        * - Append generated options.
+        * - Append any manual suffix options.
         */
-		$element.append($element.attr('data-extra-options') + data);		
+        $element_main.append($element_main.data(ELEMENT_DATA_PREFIX + 'prefix_options'));
+		$element_main.append($post_results);		
+		$element_main.append($element_main.data(ELEMENT_DATA_PREFIX + 'suffix_options'));
+        
+		/*
+        * The options are in place. We can remove the 
+        * progress element and make the target element
+        * visible to user.
+        */
+        
+		$element_progress.hide();
+		$element_main.prop("disabled", false);
+		$element_main.show();
+		$element_label.show();
 		
-		/* Hide the load progress. */
-		$progress.hide();
-		
-		/* Show and enable element/label. */
-		$element.prop("disabled", false);
-		$element.show();
-		$label.show();
-		
-		$result = data;		
+		$result = $post_results;		
 	});	
 	
 	return $result;

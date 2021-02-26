@@ -10,16 +10,10 @@
 	Output facility options. Used to generate facility drop list contents.
 	*/
 	
-	abstract class FACILITY_COL_ORDER
-	{
-		const CODE_FIRST	= 0;
-		const ADDRESS_FIRST	= 1;
-        const CODE_NAME_ADDRESS = 2;
-	}
-
     class request_data
     {
         private $filter_like;
+        private $selected;
         
         public function __construct() 
 		{		
@@ -45,10 +39,7 @@
 			}			
 		}
         
-        /*
-        * Acts as listener for a field 
-        * named "building_filter".
-        */
+        /* From options update script. */
         public function set_building_filter($value)
         {
             $this->filter_like = $value;
@@ -62,6 +53,17 @@
         public function get_filter_like()
         {
             return $this->filter_like;
+        }
+        
+        /* From options update script. */
+        public function set_value_current($value)
+        {
+            $this->selected = $value;
+        }
+        
+        public function get_selected()
+        {
+            return $this->selected;
         }
     }
 
@@ -141,8 +143,21 @@
         {            
             $_row_object = $_row_obj_list->current();
             
+            /* 
+            * We may already have a selection. If so 
+            * and the value matches value in this loop 
+            * iteration, let's generate the markup to 
+            * pre-select option in the broswer.
+            */
+            $selected_markup = NULL;
+            
+            if($_row_object->get_building_code() == $request_data->get_selected()) 
+            {
+                $selected_markup = 'selected';
+            }
+            
             ?>
-            <option value="<?php echo $_row_object->get_building_code(); ?>"><?php 
+            <option value="<?php echo $_row_object->get_building_code(); ?>" <?php echo $selected_markup; ?>><?php 
             echo $_row_object->get_building_code().' - '.ucwords(strtolower($_row_object->get_building_name().' - '.$_row_object->get_address_street())).'&nbsp;'.$_row_object->get_address_zip(); ?></option>
             <?php 
         }

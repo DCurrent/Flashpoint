@@ -311,7 +311,7 @@
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
         
-        <script src="../../libraries/javascript/options_update.js"></script>
+        
     
         
     	<style>
@@ -429,11 +429,9 @@
                         <div class="col-sm-10">
                             <select name="building_code" 
                                 id="building_code" 
-                                data-current="<?php //echo $post->get_facility(); ?>" 
-                                data-source-url="option_list_building.php" 
-                                data-extra-options='<option value="">Select Building</option>'
-                                data-col_order="<?php echo 2; //FACILITY_COL_ORDER::CODE_NAME_ADDRESS; ?>"
-                                data-grouped="1"
+                                data-dc_options_update_value_current="<?php echo $_main_data->get_building_code(); ?>" 
+                                data-dc_options_update_source_url="option_list_building.php" 
+                                data-dc_options_update_prefix_options='<option value="">Select Building</option>'
                                 class="room_filter form-control">
                                     <!--This option is for valid HTML5; it is overwritten on load.--> 
                                     <option value="">Select Building</option>                                    
@@ -447,10 +445,9 @@
                         <div class="col-sm-10">
                             <select name="room_code" 
                                 id="room_code" 
-                                data-current="<?php //echo $post->get_area(); ?>" 
-                                data-source-url="../../libraries/inserts/room.php" 
-                                data-grouped="1" 
-                                data-extra-options='<option value="">Select Room/Area/Lab</option><option value="<?php echo ROOM_SELECT::OUTSIDE; ?>">Outside</option>' 
+                                data-dc_options_update_value_current="<?php echo $_main_data->get_room_code(); ?>" 
+                                data-dc_options_update_source_url="../../libraries/inserts/room.php"                                 
+                                data-dc_options_update_prefix_options='<option value="">Select Room/Area/Lab</option><option value="<?php echo ROOM_SELECT::OUTSIDE; ?>">Outside</option>' 
                                 class="room_code_search disable form-control" 
                                 disabled>                                        
                                     <!--Options will be populated/replaced on load via jquery.-->
@@ -771,6 +768,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     
+    <script src="source/options_update.js"></script>
+        
         <!-- DateTime Picker (https://datebox.jtsage.dev/) -->)
     <script src="https://cdn.jsdelivr.net/npm/jtsage-datebox-bootstrap4@5.3.3/jtsage-datebox.min.js" type="text/javascript"></script>
 
@@ -780,28 +779,23 @@
         $(document).ready(function(event){				
 				
                 /* Populate the building codes. */
-				options_update(event, null, '#building_code');
-					
-			});
+				options_update(event, '#building_code', 1);
+            
+                /* Enables bootstrap tooltips.
+                * $('[data-toggle="tooltip"]').tooltip();
+			    */
+            });
         
         
         $('.building_filter').change(function(event)
         {
-            options_update(event, null, '#building_code');	
+            options_update(event, '#building_code', 1);	
         });
         
       $('.room_filter').change(function(event)
         {	
-            options_update(event, null, '#room_code');	
+            options_update(event, '#room_code', 1);	
         });
-  
-  $(document).ready(function(event)
-    {
-    	$('[data-toggle="tooltip"]').tooltip();
-	
-		//options_update(event, null, '#building_code');
-	
-	});        
     
 </script>
 
