@@ -105,14 +105,13 @@
 	// User access.
 	
 	
-	// Start page cache.
-	$page_obj = new class_page_cache();
-	ob_start();		
+	/* Page caching. */
+	$page_obj = new \dc\Prudhoe\PageCache();			
 		
-	// Set up navigaiton.
-	$navigation_obj = new class_navigation();	
-	$navigation_obj->generate_markup_nav_public();
-	$navigation_obj->generate_markup_footer();	
+	/* Main navigaiton. */
+	$obj_navigation_main = new Navigation();	
+	$obj_navigation_main->generate_markup_nav_public();
+	$obj_navigation_main->generate_markup_footer();	
 	
 	// Set up database.
 	$db_conn_set = new class_db_connect_params();
@@ -210,7 +209,7 @@
     
     <body>    
         <div id="container" class="container">            
-            <?php echo $navigation_obj->get_markup_nav(); ?>                                                                                
+            <?php echo $obj_navigation_main->get_markup_nav(); ?>                                                                                
             <div class="page-header">
                 <h1>Campus Fire Log</h1>
                 <p>This is a list of all reported fire/drill incidents.</p>
@@ -287,7 +286,7 @@
             <?php
 
 				echo $paging->generate_paging_markup();
-				echo $navigation_obj->get_markup_footer(); 
+				echo $obj_navigation_main->get_markup_footer(); 
 				echo '<!--Page Time: '.$page_obj->time_elapsed().' seconds-->';
 			?>
         </div><!--container-->        
