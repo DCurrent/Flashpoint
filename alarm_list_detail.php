@@ -16,30 +16,29 @@
 	
 	class class_filter
 	{
-		private
-			$create_f	= NULL,
-			$create_t	= NULL,
-			$update_f	= NULL,
-			$update_t 	= NULL,
-			$status		= NULL;
+		private	$create_f	= NULL;
+        private $create_t	= NULL;
+        private $update_f	= NULL;
+        private $update_t 	= NULL;
+        private $status		= NULL;
 		
 		// Populate members from $_REQUEST.
-		public function populate_from_request()
+		public function populate_from_request($prefix = 'set_')
 		{		
 			// Interate through each class method.
 			foreach(get_class_methods($this) as $method) 
 			{		
-				$key = str_replace('set_', '', $method);
+				$key = substr($method, 4); //str_replace($prefix, '', $method);
 							
 				// If there is a request var with key matching
 				// current method name, then the current method 
 				// is a set mutator for this request var. Run 
 				// it (the set method) with the request var. 
-				if(isset($_GET[$key]))
+				if(isset($_REQUEST[$key]))
 				{					
-					$this->$method($_GET[$key]);					
+					$this->$method($_REQUEST[$key]);					
 				}
-			}
+			}			
 		}
 		
 		private function validateDate($date, $format = 'Y-m-d')
@@ -117,9 +116,8 @@
 	// User access.
 	//...Public
 	
-	// Start page cache.
-	$page_obj = new class_page_cache();
-	ob_start();		
+	/* Page caching. */
+	$page_obj = new \dc\Prudhoe\PageCache();		
 		
 	// Set up navigaiton.
 	$navigation_obj = new class_navigation();	
@@ -467,13 +465,7 @@
             <?php echo $navigation_obj->get_markup_footer(); ?>
         </div><!--container-->        
     <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40196994-1', 'uky.edu');
-  ga('send', 'pageview');
+  
   
   $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
@@ -483,7 +475,7 @@
 </html>
 
 <?php
-	// Collect and output page markup.
-	$page_obj->markup_from_cache();	
+	/* Collect and output page markup. */
+	$page_obj->markup_and_flush();	
 	$page_obj->output_markup();
 ?>
