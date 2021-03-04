@@ -28,7 +28,7 @@
 	/* Record navigation. */
 	$obj_navigation_rec = new dc\record_navigation\RecordMenu();	
 	
-    echo '<!-- $obj_navigation_rec->get_id()'.$obj_navigation_rec->get_id().' -->';
+    //echo '<!-- $obj_navigation_rec->get_id()'.$obj_navigation_rec->get_id().' -->';
 
 	/* Prepare redirect url with variables. */
 	$url_query	= new dc\fraser\URLFix();
@@ -126,6 +126,7 @@
 				$dialog .= '<p class="alert alert-danger">Time Silenced ('.str_replace('T', ' ', $_main_data->get_time_silenced()).') is not a valid date/time. Please enter the date and time as yyyy-mm-dd hh:mm (ex. 2015-01-23 23:45).</p>';
 			}
 			
+            
 			$date = DateTime::createFromFormat('Y-m-d H:i', $_main_data->get_time_reset());
 			$date_errors = DateTime::getLastErrors();
 			if ($date_errors['warning_count'] + $date_errors['error_count'] > 0) 
@@ -133,11 +134,12 @@
 				$valid 	= FALSE;	
 				$dialog .= '<p class="alert alert-danger">Time Reset ('.$_main_data->get_time_reset().')is not a valid date/time. Please enter the date and time as yyyy-mm-dd hh:mm (ex. 2015-01-23 23:45).</p>';
 			}
-			*/
+            */
+			
 			if (!$_main_data->get_room_code() || $_main_data->get_room_code() == '') 
 			{
 				$valid 	= FALSE;	
-				$dialog .= '<p class="alert alert-danger">You must include the location ('.$_main_data->get_room_code().'). Please select a facility and area.</p>';
+				$dialog .= '<p class="alert alert-danger">You must include the location. Please select a facility and area.</p>';
 			}
 			$valid = TRUE;
 			/* Did all data verify? */
@@ -245,10 +247,7 @@
                 */
                 try
                 {                
-                    $rowcount = $dbh_pdo_statement->execute();
-                    
-                    $arr = $dbh_pdo_statement->errorInfo();
-                    print_r($arr);
+                    $rowcount = $dbh_pdo_statement->execute();                   
                 }
                 catch(\PDOException $e)
                 {
@@ -279,7 +278,7 @@
 				if(MAILING::BCC)	$headers[] = "Bcc: ".MAILING::BCC;
 				if(MAILING::CC) 	$headers[] = "Cc: ".MAILING::CC;	
 
-				//mail($address, MAILING::SUBJECT.' - Incident Alert', $body, implode("\r\n", $headers));
+				mail($address, MAILING::SUBJECT.' - Incident Alert', $body, implode("\r\n", $headers));
 			}
 			
 			break;			
@@ -345,6 +344,7 @@
             <div class="page-header">           
                 <h1>Alarm Entry</h1>
                 <p>Fill out the form below and save to create a drill or incident report.</p>
+                <p class"text-danger">All fields marked with an * are required.</p>
             </div>
             
             <?php echo $dialog; ?>
@@ -368,8 +368,8 @@
                 ?>         		
           
           		<div class="form-group row">
-                	<label class="col-sm-2" for="account_dsp">Created by</label>
-                	<div class="col-sm-10">
+                	<label class="col-sm-2" for="account_dsp">Created by <span class="text-danger">*</span></label>
+                	<div class="col-sm-10">                        
                 		<input type="text" class="form-control"  name="account_dsp" id="account_dsp" placeholder="Person creating ticket." 
                         value="<?php echo $lookup->get_name_f().' '.$lookup->get_name_l(); ?>" 
 						readonly>
@@ -408,7 +408,7 @@
 				?>
                 
                 <div class="form-group row">
-                	<label class="col-sm-2" for="label">Title of Entry</label>
+                	<label class="col-sm-2" for="label">Title of Entry <span class="text-danger">*</span></label>
                 	<div class="col-sm-10">
                 		<input type="text" class="form-control"  name="label" id="label" placeholder="Title of entry." value="<?php echo $_main_data->get_label(); ?>">
                 	</div>
@@ -425,7 +425,7 @@
                     </div>
                     
                     <div class="form-group row">
-                        <label class="col-sm-2" for="building_code">Building</label>
+                        <label class="col-sm-2" for="building_code">Building <span class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <select name="building_code" 
                                 id="building_code" 
@@ -445,7 +445,7 @@
                         added by generation script.
                     -->
                     <div class="form-group row">
-                        <label class="col-sm-2" for="room_code">Area</label>
+                        <label class="col-sm-2" for="room_code">Area <span class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <select name="room_code" 
                                 id="room_code" 
@@ -461,7 +461,7 @@
                     </div>
                     
                     <div class="form-group row">
-                        <label class="col-sm-2" for="occupied">Building Occupied</label>
+                        <label class="col-sm-2" for="occupied">Building Occupied <span class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             
                             <!--Occupied: <?php echo $_main_data->get_occupied(); ?>-->
@@ -479,7 +479,7 @@
                     </div>
                     
                     <div class="form-group row">
-                        <label class="col-sm-2" for="evacuated">Building Evacuated</label>
+                        <label class="col-sm-2" for="evacuated">Building Evacuated <span class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <!--Evacuated: <?php echo $_main_data->get_evacuated(); ?>-->
                         
@@ -501,7 +501,7 @@
                 	<legend>Alarm</legend>
                     
                     <div class="form-group row">
-                        <label class="col-sm-2" for="time_reported">Time of Incident</label>
+                        <label class="col-sm-2" for="time_reported">Time of Incident <span class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <input type="text"
                             	class	="form-control"  
@@ -551,7 +551,7 @@
                     </div>
                     
                     <div class="form-group row">
-                        <label class="col-sm-2" for="devices_activated">Devices Activated</label>
+                        <label class="col-sm-2" for="devices_activated">Devices Activated <span class="text-danger">*</span></label>
                         <div class="col-sm-10" id="devices_activated">
                             <div class="form-check form-check">
                                 <input class="form-check-input" type="checkbox" name="report_device_pull" id="report_device_pull" value="1" <?php if($_main_data->get_report_device_pull() == TRUE) echo ' checked '; ?>>
@@ -581,7 +581,7 @@
                     </div>              
                     
                     <div class="form-group row">
-                        <label class="col-sm-2" for="notified">Notified</label>
+                        <label class="col-sm-2" for="notified">Notified <span class="text-danger">*</span></label>
                         <div class="col-sm-10">
                             <!--Notified: <?php echo $_main_data->get_notified(); ?>-->
                         
@@ -602,7 +602,7 @@
                 	<legend>Incident</legend>
                     
                         <div class="form-group row">
-                            <label class="col-sm-2" for="">Type of Incident</label>
+                            <label class="col-sm-2" for="">Type of Incident <span class="text-danger">*</span></label>
                             <div class="col-sm-10">
                                 <!--Fire (type of incident): <?php echo $_main_data->get_fire(); ?>-->
 
@@ -638,14 +638,14 @@
                         </div>
                     
                         <div class="form-group row">
-                            <label class="col-sm-2" for="label">Injuries Reported</label>
+                            <label class="col-sm-2" for="label">Injuries Reported <span class="text-danger">*</span></label>
                             <div class="col-sm-3">
                                 <input type="number" min="0" step="1" class="form-control"  name="injuries" id="injuries" value="<?php echo $_main_data->get_injuries(); ?>" required>
                             </div>
                         </div>
                         
                         <div class="form-group row">
-                            <label class="col-sm-2" for="label">Fatalities Reported</label>
+                            <label class="col-sm-2" for="label">Fatalities Reported <span class="text-danger">*</span></label>
                             <div class="col-sm-3">
                                 <!--<?php echo $_main_data->get_fatalities(); ?>-->
                                 <input type="number" min="0" step="1" class="form-control"  name="fatalities" id="fatalities" value="<?php echo $_main_data->get_fatalities(); ?>" required>
@@ -653,7 +653,7 @@
                         </div>
                     
                         <div class="form-group row">
-                            <label class="col-sm-2" for="extinguisher">Fire Extinguisher Used</label>
+                            <label class="col-sm-2" for="extinguisher">Fire Extinguisher Used <span class="text-danger">*</span></label>
                             <div class="col-sm-10">
 
                                 <!--Extinguisher: <?php echo $_main_data->get_extinguisher(); ?>-->
@@ -783,8 +783,7 @@
         $(document).ready(function(event){				
 				
                 /* Populate the building codes. */
-				options_update(event, '#building_code', 1);
-            
+                options_update(event, '#building_code', 1)
                 /* 
                 * If the building and room are selected,
                 * then we need to load up the room options
