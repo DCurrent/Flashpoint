@@ -14,14 +14,14 @@
 * $use_current - If true, send the value_current data attribute
 *
 */
-function options_update($event, $element_id, $use_current) {	
+async function options_update($event, $element_id, $use_current) {	
 	
 	"use strict";
 	
     const ELEMENT_DATA_PREFIX = 'dc_options_update_';
     
     var $append            = null; // Array of elements created and appended to form.
-	var $result            = null; // Return value.
+	//var $result            = null; // Return value.
 	var $element_main      = null; // Primary element. Contains content to update.
 	var $element_progress  = null; // Element displayed in place of main element while source is loading.
     var $element_label     = null; // Label of element with content to update
@@ -30,7 +30,7 @@ function options_update($event, $element_id, $use_current) {
 	var $data		       = null; // Combined array of items to add as hidden type form elements before posting.
 	var $source_url        = null; // URL to page that provides the option source markup.
     
-	/*
+    /*
     * Get the target element to update and the
     * progress element using supplied ID. We assume 
     * the progress element has same ID as target 
@@ -51,7 +51,9 @@ function options_update($event, $element_id, $use_current) {
 	/* Get source url from data attributes */
     $source_url = $element_main.data(ELEMENT_DATA_PREFIX + 'source_url');	
 	
-	/* 
+   
+    
+    /* 
     * It make take a few moments for the 
     * source script to load options. We
     * make the target element and its 
@@ -93,7 +95,7 @@ function options_update($event, $element_id, $use_current) {
                 
 		$form.append($append);
 	}
-		
+    	
 	/* 
     * Post to option generation source script. When
     * the script is complete we can append its results
@@ -101,32 +103,36 @@ function options_update($event, $element_id, $use_current) {
     */
 	$posting = $.post($source_url, $form.serialize());	
 	
-	$posting.done(function($post_results) 
-	{		
-		$element_main.empty();
-	
-		/* 
-        * - Append any manual prefix options. 
-        * - Append generated options.
-        * - Append any manual suffix options.
-        */
-        $element_main.append($element_main.data(ELEMENT_DATA_PREFIX + 'prefix_options'));
-		$element_main.append($post_results);		
-		$element_main.append($element_main.data(ELEMENT_DATA_PREFIX + 'suffix_options'));
+    let promise = new Promise((resolve, reject) => {
         
-		/*
-        * The options are in place. We can remove the 
-        * progress element and make the target element
-        * visible to user.
-        */
-        
-		$element_progress.hide();
-		$element_main.prop("disabled", false);
-		$element_main.show();
-		$element_label.show();
-		
-		$result = $post_results;		
-	});	
+        $posting.done(function($post_results){		
+            
+            $element_main.empty();
+
+            /* 
+            * - Append any manual prefix options. 
+            * - Append generated options.
+            * - Append any manual suffix options.
+            */
+            $element_main.append($element_main.data(ELEMENT_DATA_PREFIX + 'prefix_options'));
+            $element_main.append($post_results);		
+            $element_main.append($element_main.data(ELEMENT_DATA_PREFIX + 'suffix_options'));
+
+            /*
+            * The options are in place. We can remove the 
+            * progress element and make the target element
+            * visible to user.
+            */
+
+            $element_progress.hide();
+            $element_main.prop("disabled", false);
+            $element_main.show();
+            $element_label.show();
+        })     
+    });	
+    
+    let result = await promise; // wait until the promise resolves (*)
+
+   // alert('wait');
 	
-	return $result;
 }
