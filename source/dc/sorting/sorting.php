@@ -10,6 +10,7 @@
 		const
 			ORDER	= 'order',
 			FILTER	= 'field';
+        
 	}
 	
 	abstract class SORTING_ORDER_MARKUP
