@@ -127,6 +127,11 @@
             return $this->building_code;
         }
         
+        public function set_area_floor($value)
+        {
+            $this->area_floor = $value;
+        }
+        
         public function get_area_floor()
         {
             return $this->area_floor;
@@ -138,123 +143,144 @@
 	$request_data = new request_data();
 	
 	 
-    $sql_string_floor = 'SELECT DISTINCT floor FROM vw_uk_space_room WHERE facility = :filter_building_code ORDER BY floor';	
-	$_sql_string_room = 'SELECT barcode, room, useage_desc FROM vw_uk_space_room WHERE facility '.$sql_where.' AND floor = ?'
         
     try
-    {   
-        $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
+    {  
+        /* 
+        * Floor list. We only need to query the floor
+        * list one time, so we'll go ahead and execute
+        * it here.
+        */
+        $sql_string_floor = 'EXEC dc_flashpoint_floor_list_simple :filter_building_code';    
+    
+        $dbh_pdo_statement_floor_list = $dc_yukon_connection->get_member_connection()->prepare($sql_string_floor);
 		
-	    $dbh_pdo_statement->bindValue(':filter_building_code', $request_data->get_filter_building_code(), \PDO::PARAM_STR);		
-        $dbh_pdo_statement->execute();
+	    $dbh_pdo_statement_floor_list->bindValue(':filter_building_code', $request_data->get_filter_building_code(), \PDO::PARAM_STR);		
+        $dbh_pdo_statement_floor_list->execute();
+        
+        /* 
+        * Room list. We're building option markup that 
+        * rooms by floor, so we need to run this query
+        * once for every floor. We'll prepare the query
+        * here and bind the floor parameter to it for
+        * exeuction as we go through the floor query 
+        * results.
+        */
+        $sql_string_room = 'EXEC dc_flashpoint_area_list_simple :filter_building_code, :filter_building_floor';
+    
+        $filter_building_floor = '';
+        
+        $dbh_pdo_statement_room_list = $dc_yukon_connection->get_member_connection()->prepare($sql_string_room);
+		
+        /* 
+        * Building code is always the same. We can bind 
+        * its VALUE now. We only need to bind a PARAMETER
+        * for the floor.
+        */
+        $dbh_pdo_statement_room_list->bindValue(':filter_building_code', $request_data->get_filter_building_code(), \PDO::PARAM_STR);
+	    $dbh_pdo_statement_room_list->bindParam(':filter_building_floor', $filter_building_floor, \PDO::PARAM_STR);
+        
     }
     catch(\PDOException $e)
     {
         die('Database error : '.$e->getMessage());
     }
     
+    /* 
+    * Set up the object variables we'll use to hold
+    * query results.
+    */
     $_row_object_floor = NULL;
-    $_row_obj_floor_list = new \SplDoublyLinkedList();	// Linked list object.
+    $_row_obj_floor_list = new \SplDoublyLinkedList();
+    
+    $_row_object_room = NULL;
+    $_row_obj_room_list = new \SplDoublyLinkedList();
 
+    /*
+    * Manually add objects that we need and don't
+    * appear in database.
+    */
+    $_row_object_floor = NULL;
+    $_row_object_floor = new area_data();
+    $_row_object_floor->set_area_floor('Other');
+    $_row_obj_floor_list->push($_row_object_floor);
+
+    $_row_object_room = new area_data();
+    $_row_object_room->set_barcode(-1);
+    $_row_object_room->set_area_id('NA');
+    $_row_object_room->set_useage_desc('Outside of Building');
+    $_row_obj_room_list->push($_row_object_room);
+
+
+    /* Build list of row objects for floor. */
+    while($_row_object_floor = $dbh_pdo_statement_floor_list->fetchObject('area_data', array()))
+    {       
+        $_row_obj_floor_list->push($_row_object_floor);
+    }
+
+    /*
+    * Go through list of floor objects we just built. 
+    * Create the option group markup for floor, and
+    * update the floor parameter bound to room query.
+    * Then we execute the room query to get a list
+    * of rooms for current floor in loop.
+    */
     if(is_object($_row_obj_floor_list) === TRUE)
     { 
-        for($_row_obj_floor_list->rewind(); $_row_obj_floor_list->valid(); $_row_obj_list->next())
+        for($_row_obj_floor_list->rewind(); $_row_obj_floor_list->valid(); $_row_obj_floor_list->next())
         {            
             $_row_object_floor = $_row_obj_floor_list->current();
-        }
-    }
-
-    /* 
-    * Get every row as an object and 
-    * push it into a double linked
-    * list.
-    */
-    
-    $_row_object = NULL;
-    $_row_obj_list = new \SplDoublyLinkedList();	// Linked list object.
-
-    $_row_object = new area_data();
-    $_row_object->set_barcode(ROOM_SELECT::OUTSIDE);
-    $_row_object->set_area_id('NA');
-    $_row_object->set_useage_desc('Outside');
-    $_row_obj_list->push($_row_object);
-
-    while($_row_object = $dbh_pdo_statement->fetchObject('area_data', array()))
-    {       
-        $_row_obj_list->push($_row_object);
-    }
-    
-    if(is_object($_row_obj_list) === TRUE)
-    { 
-        for($_row_obj_list->rewind(); $_row_obj_list->valid(); $_row_obj_list->next())
-        {            
-            $_row_object = $_row_obj_list->current();
+            
+            /* Build option group markup. */
+            ?>
+            <optgroup label="Floor <?php echo $_row_object_floor->get_area_floor(); ?>">
+            <?php
             
             /* 
-            * We may already have a selection. If so 
-            * and the value matches value in this loop 
-            * iteration, let's generate the markup to 
-            * pre-select option in the broswer.
+            * Update bound floor parameter and execute
+            * the room list query.
             */
-            $selected_markup = NULL;
-            
-            if($_row_object->get_building_code() == $request_data->get_selected()) 
-            {
-                $selected_markup = 'selected';
+            $filter_building_floor = $_row_object_floor->get_area_floor();
+            $dbh_pdo_statement_room_list->execute();            
+                        
+            /* Build list of room objects. */
+            while($_row_object_room = $dbh_pdo_statement_room_list->fetchObject('area_data', array()))
+            {       
+                $_row_obj_room_list->push($_row_object_room);
             }
             
+            /* Build markup option for each room in list. */
+            if(is_object($_row_obj_room_list) === TRUE)
+            { 
+                for($_row_obj_room_list->rewind(); $_row_obj_room_list->valid(); $_row_obj_room_list->next())
+                {            
+                    $_row_object_room = $_row_obj_room_list->current();
+                    
+                    
+                    /* 
+                    * We may already have a selection. If so 
+                    * and the value matches value in this loop 
+                    * iteration, let's generate the markup to 
+                    * pre-select option in the broswer.
+                    */
+                    $selected_markup = NULL;
+
+                    if($_row_object_room->get_barcode() == $request_data->get_selected()) 
+                    {
+                        $selected_markup = 'selected';
+                    }
+                    
+                    ?>
+                    <option value = "<?php echo $_row_object_room->get_barcode(); ?>" <?php echo $selected_markup; ?>><?php 
+            echo $_row_object_room->get_area_id().' - '.ucwords(strtolower($_row_object_room->get_useage_desc())); ?></option>
+                    <?php
+                }
+            }
+            
+            /* Close option group markup. */
             ?>
-            <option value="<?php echo $_row_object->get_barcode(); ?>"><?php 
-            echo $_row_object->get_area_id().' - '.ucwords(strtolower($_row_object->get_useage_desc()));?></option>
-            <?php 
+            </optgroup>
+            <?php
         }
     }
-
-    // First let’s get a list of floors. Theoretically we could make this more efficient by just querying for the 
-	// max value and using a counter loop later, but some floors have mixed alphanumeric designations.	
-	$query->set_sql('SELECT DISTINCT floor FROM vw_uk_space_room WHERE facility '.$sql_where.' ORDER BY floor');	
-			
-	$query->set_params($params);
-	$query->query();		
-	$floors = $query->get_line_object_all();		
-	
-	// Now for each floor, we need a list of rooms.
-	foreach($floors as $floor)
-	{
-		// Add floor to parameter array.
-		$params[$floor_key] = $floor->floor;
-					
-		// Query for the room list.
-		$query->set_sql('SELECT barcode, room, useage_desc FROM vw_uk_space_room WHERE facility '.$sql_where.' AND floor = ?');
-		$query->set_params($params);		
-		$query->query();
-		
-		// Get all rows.
-		$rooms = $query->get_line_object_all();
-		
-		// Add the Floor as a an optgroup to markup.
-		$markup.='<optgroup label="Floor '.$floor->floor.'">'.PHP_EOL;
-		
-		// Get each room row object.
-		foreach ($rooms as $room)
-		{
-			$selected = NULL;
-			
-			// If the room use description from database wasn't blank, let's include it.
-			if($room->useage_desc) $use = ' - '.ucwords(strtolower($room->useage_desc));
-			
-			if($post->current && $post->current == $room->barcode)
-			{
-				$selected = ' selected ';
-			}
-			
-			// Add the completed option value string to markup.        	
-			$markup.='<option value="'.$room->barcode.'"'.$selected.'>'.$room->room.$use.'</option>'.PHP_EOL;		                       
-		}
-		
-		// Close the optgroup.
-		$markup.='</optgroup>'.PHP_EOL;
-	}
-
-
 ?>
