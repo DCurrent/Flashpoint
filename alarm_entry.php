@@ -75,7 +75,7 @@
 			/* Call and execute delete SP. */            
             $sql_string = 'EXEC fire_alarm_delete :id';
 			
-            $dbh_pdo_statement = $dc_yukon_connection->prepare($sql_string);
+            $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
 
             $dbh_pdo_statement->bindParam(':id', $_main_data->get_id(), \PDO::PARAM_STR);
 
