@@ -119,48 +119,39 @@
 	/* Page caching. */
 	$page_obj = new \dc\Prudhoe\PageCache();		
 		
-	// Set up navigaiton.
+	/* Set up navigaiton. */
 	$navigation_obj = new class_navigation();	
 	$navigation_obj->generate_markup_nav_public();
 	$navigation_obj->generate_markup_footer();	
 	
-	// Set up database.
-	$db_conn_set = new class_db_connect_params();
-	$db_conn_set->set_name(DATABASE::NAME);
-	
-	$db = new class_db_connection($db_conn_set);
-	$query = new class_db_query($db);
-	
-	// Record navigation.
-	$obj_navigation_rec = new Navigation();
-	
-	$query->set_sql('{call fire_alarm_detail(@id = ?,														 
-								@sort_field 	= ?,
-								@sort_order 	= ?,
-								@nav_first		= ?,
-								@nav_previous	= ?,
-								@nav_next		= ?,
-								@nav_last		= ?)}');	
-	$nav_first 		= NULL;
-	$nav_previous	= NULL;
-	$nav_next		= NULL;
-	$nav_last 		= NULL;
-					
-	$params = array(array($obj_navigation_rec->get_id(), 	SQLSRV_PARAM_IN),
-					array(NULL, 		SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
-					array(NULL, 		SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
-					array($nav_first,	SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
-					array($nav_previous, SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
-					array($nav_next, 	SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
-					array($nav_last, 	SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT));
+	/* Set up database. */
 
-	$query->set_params($params);
-	$query->query();
+    /* Record navigation. */
+	$obj_navigation_rec = new dc\record_navigation\RecordMenu();
+
+    /* Call and execute delete SP. */            
+    $sql_string = 'EXEC fire_alarm_detail :id,														 
+								:sort_field,
+								:sort_order,
+								:nav_first,
+								:nav_previous,
+								:nav_next,
+								:nav_last';
+
+    $dbh_pdo_statement = $dc_yukon_connection->prepare($sql_string);
+
+    $dbh_pdo_statement->bindValue(':id', $obj_navigation_rec->get_id(), \PDO::PARAM_INT);                    
+    $dbh_pdo_statement->bindValue(':sort_field', NULL, \PDO::PARAM_INT);
+    $dbh_pdo_statement->bindValue(':sort_order', NULL, \PDO::PARAM_INT);						
+    $dbh_pdo_statement->bindValue(':nav_first', NULL, \PDO::PARAM_INT);
+    $dbh_pdo_statement->bindValue(':nav_previous', NULL, \PDO::PARAM_INT);
+    
+    $rowcount = $dbh_pdo_statement->execute();
 	
-	$query->get_line_params()->set_class_name('class_fire_alarm_data');
-	if($query->get_row_exists() === TRUE) 
-	{
-		$_obj_data_main = $query->get_line_object();
+    $_obj_data_main = $dbh_pdo_statement->fetchObject('class_fire_alarm_data', array());
+    
+	if($$_obj_data_main) 
+	{		
 	}
 	else
 	{
@@ -169,51 +160,48 @@
 	}
 	
 	
-	// Type display.
+	/* Type display. */
 	$type_of_incident = NULL;
-	$_obj_data_display = new class_common_data();
 	
-	$query->set_sql('{call fire_alarm_type_display(@id = ?)}');	
+	$sql_string = 'EXEC fire_alarm_type_display :id';	
 	
-	$params = array(array($_obj_data_main->get_fire(), SQLSRV_PARAM_IN, SQLSRV_PHPTYPE_INT));
+    $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_fire(), \PDO::PARAM_INT);
+	
+    $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
 
-	$query->set_params($params);
-	$query->query();
+    if($_obj_data_display)
+    {
+        $type_of_incident = $_obj_data_display->get_label();
+    }	
 	
-	$query->get_line_params()->set_class_name('class_common_data');
-	if($query->get_row_exists() === TRUE) $_obj_data_display = $query->get_line_object();
-	
-	$type_of_incident = $_obj_data_display->get_label();
-	
-	// Cause display.
+
+    /* Cause display. */
 	$cause_of_incident = NULL;
-	$_obj_data_display = new class_common_data();
 	
-	$query->set_sql('{call fire_alarm_cause_display(@id = ?)}');	
+	$sql_string = 'EXEC fire_alarm_cause_display :id';	
 	
-	$params = array(array($_obj_data_main->get_cause(), SQLSRV_PARAM_IN, SQLSRV_PHPTYPE_INT));
+    $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_cause(), \PDO::PARAM_INT);
+	
+    $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
 
-	$query->set_params($params);
-	$query->query();
+    if($_obj_data_display)
+    {
+        $cause_of_incident = $_obj_data_display->get_label();
+    }
 	
-	if($query->get_row_exists() === TRUE) $_obj_data_display = $query->get_line_object();
-	
-	$cause_of_incident = $_obj_data_display->get_label();
-	
-	// Party display.
+	/* Party display. */
 	$responsible_party = NULL;
-	$_obj_data_display = new class_common_data();
 	
-	$query->set_sql('{call fire_alarm_responsible_party_display(@id = ?)}');	
+	$sql_string = 'EXEC fire_alarm_responsible_party_display :id';	
 	
-	$params = array(array($_obj_data_main->get_responsible_party(), SQLSRV_PARAM_IN, SQLSRV_PHPTYPE_INT));
+    $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_responsible_party(), \PDO::PARAM_INT);
+	
+    $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
 
-	$query->set_params($params);
-	$query->query();
-	
-	if($query->get_row_exists() === TRUE) $_obj_data_display = $query->get_line_object();
-	
-	$responsible_party = $_obj_data_display->get_label();
+    if($_obj_data_display)
+    {
+        $responsible_party = $_obj_data_display->get_label();
+    }
 
 ?>
 
