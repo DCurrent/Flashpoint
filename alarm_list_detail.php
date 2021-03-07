@@ -393,10 +393,12 @@
                         	<table class="table">
                                 <caption></caption>
                                 <thead>
-                                	<th>Pull Station</th>
-                                    <th>Sprinkler</th>
-                                    <th>Smoke Detector</th>
-                                    <th>Stove Supression</th>
+                                    <tr>
+                                	    <th>Pull Station</th>
+                                        <th>Sprinkler</th>
+                                        <th>Smoke Detector</th>
+                                        <th>Stove Supression</th>
+                                    </tr>
                                 </thead>
                                 <tfoot>
                                 </tfoot>
