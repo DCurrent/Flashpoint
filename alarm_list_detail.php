@@ -171,13 +171,24 @@
 	
 	
 	/* Type display. */
-	$type_of_incident = NULL;
-	
-	$sql_string = 'EXEC fire_alarm_type_display :id';	
-	
-    $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_fire(), \PDO::PARAM_INT);
-	
-    $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
+    $type_of_incident = NULL;
+
+    $sql_string = 'EXEC fire_alarm_type_display :id';	
+
+	try
+    {
+        $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
+        
+        $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_fire(), \PDO::PARAM_INT);
+        
+        $_obj_data_display = $dbh_pdo_statement->execute();
+
+        $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
+    }
+    catch(\PDOException $e)
+    {
+        die('Database error : '.$e->getMessage());
+    }
 
     if($_obj_data_display)
     {
@@ -188,11 +199,23 @@
     /* Cause display. */
 	$cause_of_incident = NULL;
 	
-	$sql_string = 'EXEC fire_alarm_cause_display :id';	
+    $sql_string = 'EXEC fire_alarm_cause_display :id';	
 	
-    $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_cause(), \PDO::PARAM_INT);
-	
-    $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
+    try
+    {
+
+        $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
+        
+        $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_fire(), \PDO::PARAM_INT);
+        
+        $_obj_data_display = $dbh_pdo_statement->execute();
+
+        $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
+    }
+    catch(\PDOException $e)
+    {
+        die('Database error : '.$e->getMessage());
+    }
 
     if($_obj_data_display)
     {
@@ -204,9 +227,20 @@
 	
 	$sql_string = 'EXEC fire_alarm_responsible_party_display :id';	
 	
-    $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_responsible_party(), \PDO::PARAM_INT);
-	
-    $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
+    try
+    {
+        $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
+        
+        $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_fire(), \PDO::PARAM_INT);
+        
+        $_obj_data_display = $dbh_pdo_statement->execute();
+
+        $_obj_data_display = $dbh_pdo_statement->fetchObject('class_common_data', array());
+    }
+    catch(\PDOException $e)
+    {
+        die('Database error : '.$e->getMessage());
+    }
 
     if($_obj_data_display)
     {
@@ -293,8 +327,9 @@
 			?>
           
             <!--div class="table-responsive"-->
+            <h2>General</h2>
             <table class="table">
-                <caption>General</caption>
+                <caption></caption>
                 <thead>
                 </thead>
                 <tfoot>
@@ -346,8 +381,9 @@
                 </tbody>                        
             </table>
             
+            <h2>Alarm</h2>
             <table class="table">
-                <caption>Alarm</caption>
+                <caption></caption>
                 <thead>
                 </thead>
                 <tfoot>
@@ -417,8 +453,10 @@
                 </tbody>                        
             </table>
             
+            <h2>Incident</h2>
+            
             <table class="table">
-                <caption>Incident</caption>
+                <caption></caption>
                 <thead>
                 </thead>
                 <tfoot>
