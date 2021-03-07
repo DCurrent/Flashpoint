@@ -150,7 +150,7 @@
 	
     $_obj_data_main = $dbh_pdo_statement->fetchObject('data_fire_alarm', array());
     
-	if($$_obj_data_main) 
+	if($_obj_data_main) 
 	{		
 	}
 	else
