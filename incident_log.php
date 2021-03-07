@@ -151,17 +151,29 @@
 	$sort_field 		= $sorting->get_sort_field();
 	$sort_order 		= $sorting->get_sort_order();	
 	
-	$params = array(array($paging->get_page_current(), 	SQLSRV_PARAM_IN), 
-					array($paging->get_row_max(), 		SQLSRV_PARAM_IN), 
-					array($page_last, 					SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
-					array($row_count, 					SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),					
-					array($filter->get_create_f(),		SQLSRV_PARAM_IN),
-					array($filter->get_create_t(),		SQLSRV_PARAM_IN),
-					array($filter->get_update_f(),		SQLSRV_PARAM_IN),
-					array($filter->get_update_t(),		SQLSRV_PARAM_IN),
-					array(STATUS_SELECT::S_PUBLIC,		SQLSRV_PARAM_IN),
-					array($sort_field,					SQLSRV_PARAM_IN),
-					array($sort_order,					SQLSRV_PARAM_IN));					
+    $p_paging_current = $paging->get_page_current();
+    $p_row_max = 1000; //$paging->get_row_max();
+    $p_page_last = $page_last;
+    $p_row_count = $row_count;
+    $p_create_f = $filter->get_create_f();
+    $p_create_t = $filter->get_create_t();
+    $p_update_f = $filter->get_update_f();
+    $p_update_t = $filter->get_update_t();
+    $p_status = STATUS_SELECT::S_PUBLIC;
+    $p_sort_field = $sort_field;
+    $p_sort_order = $sort_order;
+
+	$params = array(array(&$p_paging_current, 	SQLSRV_PARAM_IN), 
+					array(&$p_row_max, 		SQLSRV_PARAM_IN), 
+					array(&$p_page_last, 		SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
+					array(&$p_row_count, 		SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),					
+					array(&$p_create_f ,		SQLSRV_PARAM_IN),
+					array(&$p_create_t,		SQLSRV_PARAM_IN),
+					array(&$p_update_f,		SQLSRV_PARAM_IN),
+					array(&$p_update_t,		SQLSRV_PARAM_IN),
+					array(&$p_status,		SQLSRV_PARAM_IN),
+					array(&$p_sort_field,	SQLSRV_PARAM_IN),
+					array(&$p_sort_order,	SQLSRV_PARAM_IN));					
 
 	$query->set_params($params);
 	$query->query();
