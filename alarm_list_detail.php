@@ -6,11 +6,11 @@
 	{
 		if($value == TRUE)
 		{
-			echo '<span class="glyphicon glyphicon-ok" title="Yes"></span>';
+			echo '<span class="glyphicon glyphicon-ok" title="Yes">&#9745;</span>';
 		}
 		else
 		{
-			echo '<span class="glyphicon glyphicon-remove" title="No"></span>';
+			echo '<span class="glyphicon glyphicon-remove" title="No">&#9744;</span>';
 		}
 	}
 	
