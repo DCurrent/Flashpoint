@@ -309,10 +309,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
-        
-        
-    
-        
+                
     	<style>
 			ul.checkbox  { 
 				
@@ -337,7 +334,7 @@
 			} 
 		</style>
     </head>
-    
+            
     <body>    
         <div id="container" class="container">            
             <?php echo $obj_navigation_main->get_markup_nav(); ?>                                                                                
