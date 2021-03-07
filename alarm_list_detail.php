@@ -119,10 +119,10 @@
 	/* Page caching. */
 	$page_obj = new \dc\Prudhoe\PageCache();		
 		
-	/* Set up navigaiton. */
-	$navigation_obj = new class_navigation();	
-	$navigation_obj->generate_markup_nav_public();
-	$navigation_obj->generate_markup_footer();	
+	/* Main navigaiton. */
+	$obj_navigation_main = new Navigation();
+	$obj_navigation_main->generate_markup_nav_public();
+	$obj_navigation_main->generate_markup_footer();		
 	
 	/* Set up database. */
 
@@ -138,7 +138,7 @@
 								:nav_next,
 								:nav_last';
 
-    $dbh_pdo_statement = $dc_yukon_connection->prepare($sql_string);
+    $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
 
     $dbh_pdo_statement->bindValue(':id', $obj_navigation_rec->get_id(), \PDO::PARAM_INT);                    
     $dbh_pdo_statement->bindValue(':sort_field', NULL, \PDO::PARAM_INT);
@@ -148,7 +148,7 @@
     
     $rowcount = $dbh_pdo_statement->execute();
 	
-    $_obj_data_main = $dbh_pdo_statement->fetchObject('class_fire_alarm_data', array());
+    $_obj_data_main = $dbh_pdo_statement->fetchObject('data_fire_alarm', array());
     
 	if($$_obj_data_main) 
 	{		
