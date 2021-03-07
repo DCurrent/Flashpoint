@@ -146,7 +146,7 @@
     $dbh_pdo_statement->bindValue(':nav_first', NULL, \PDO::PARAM_INT);
     $dbh_pdo_statement->bindValue(':nav_previous', NULL, \PDO::PARAM_INT);
     
-    $rowcount = $dbh_pdo_statement->execute();
+    $_obj_data_main = $dbh_pdo_statement->execute();
 	
     $_obj_data_main = $dbh_pdo_statement->fetchObject('data_fire_alarm', array());
     
