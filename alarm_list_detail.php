@@ -310,8 +310,12 @@
                     </tr>
                                         
                     <tr>
-                        <th>Created</th>                                   
-                        <td><?php if(is_object($_obj_data_main->get_log_create()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_log_create()->getTimestamp()); ?></td>
+                        <th>Created</th>        
+                                                
+                        <?php $obj_date_time = new DateTime($_obj_data_main->get_log_create()); ?>
+                        
+                        <td><?php echo date('Y-m-d H:i:s', $obj_date_time->getTimestamp()); ?></td>
+                        
                     </tr>
                     
                     <tr>
@@ -320,8 +324,10 @@
                     </tr>
                     
                     <tr>
-                        <th>Last Update</th>                                   
-                        <td><?php if(is_object($_obj_data_main->get_log_update()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_log_update()->getTimestamp()); ?></td>
+                        <th>Last Update</th>    
+                        
+                        <?php $obj_date_time = new DateTime($_obj_data_main->get_log_update()); ?>
+                        <td><?php echo date('Y-m-d H:i:s', $obj_date_time->getTimestamp()); ?></td>
                     </tr>
                     
                     <?php
@@ -348,17 +354,22 @@
                 </tfoot>
                 <tbody> 
                     <tr>
-                        <th>Time of Incident</th>                                   
-                        <td><?php if(is_object($_obj_data_main->get_time_reported()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_time_reported()->getTimestamp()); ?></td>
+                        <th>Time of Incident</th> 
+                        
+                        <?php $obj_date_time = new DateTime($_obj_data_main->get_time_reported()); ?>
+                        <td><?php echo date('Y-m-d H:i:s', $obj_date_time->getTimestamp()); ?></td>
                     </tr>
                     <tr>
-                        <th>Time Silenced</th>
-                        <td><?php if(is_object($_obj_data_main->get_time_silenced()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_time_silenced()->getTimestamp()); ?></td>                                   
+                        <th>Time Silenced</th>   
+                        
+                        <?php $obj_date_time = new DateTime($_obj_data_main->get_time_silenced()); ?>
+                        <td><?php echo date('Y-m-d H:i:s', $obj_date_time->getTimestamp()); ?></td>
                     </tr>  
                     
                     <tr>
                         <th>Time Reset</th>
-                        <td><?php if(is_object($_obj_data_main->get_time_reset()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_time_reset()->getTimestamp()); ?></td>                                   
+                        <?php $obj_date_time = new DateTime($_obj_data_main->get_time_reset()); ?>
+                        <td><?php echo date('Y-m-d H:i:s', $obj_date_time->getTimestamp()); ?></td>
                     </tr> 
                     
                     <tr>
