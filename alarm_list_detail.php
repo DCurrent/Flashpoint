@@ -138,17 +138,27 @@
 								:nav_next,
 								:nav_last';
 
-    $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
+    echo '<!-- ID: '.$obj_navigation_rec->get_id().' -->';
 
-    $dbh_pdo_statement->bindValue(':id', $obj_navigation_rec->get_id(), \PDO::PARAM_INT);                    
-    $dbh_pdo_statement->bindValue(':sort_field', NULL, \PDO::PARAM_INT);
-    $dbh_pdo_statement->bindValue(':sort_order', NULL, \PDO::PARAM_INT);						
-    $dbh_pdo_statement->bindValue(':nav_first', NULL, \PDO::PARAM_INT);
-    $dbh_pdo_statement->bindValue(':nav_previous', NULL, \PDO::PARAM_INT);
-    
-    $_obj_data_main = $dbh_pdo_statement->execute();
-	
-    $_obj_data_main = $dbh_pdo_statement->fetchObject('data_fire_alarm', array());
+    try
+    {   
+        $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
+
+        $dbh_pdo_statement->bindValue(':id', $obj_navigation_rec->get_id(), \PDO::PARAM_INT);                    
+        $dbh_pdo_statement->bindValue(':sort_field', NULL, \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':sort_order', NULL, \PDO::PARAM_INT);						
+        $dbh_pdo_statement->bindValue(':nav_first', NULL, \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':nav_previous', NULL, \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':nav_next', NULL, \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':nav_last', NULL, \PDO::PARAM_INT);
+        
+        $_obj_data_main = $dbh_pdo_statement->execute();
+        $_obj_data_main = $dbh_pdo_statement->fetchObject('data_fire_alarm', array());
+    }
+    catch(\PDOException $e)
+    {
+        die('Database error : '.$e->getMessage());
+    }
     
 	if($_obj_data_main) 
 	{		
@@ -239,7 +249,7 @@
     
     <body>    
         <div id="container" class="container">            
-            <?php echo $navigation_obj->get_markup_nav(); ?>                                                                                
+            <?php echo $obj_navigation_main->get_markup_nav(); ?>                                                                                
             <div class="page-header">
                 <h1>Fire Incident Report</h1>
                 <p>See below for details about this incident.</p>
@@ -450,7 +460,7 @@
                 </tbody>                        
             </table> 
             
-            <?php echo $navigation_obj->get_markup_footer(); ?>
+            <?php echo $obj_navigation_main->get_markup_footer(); ?>
         </div><!--container-->        
     <script>
   
