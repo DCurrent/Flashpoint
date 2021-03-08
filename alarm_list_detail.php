@@ -130,13 +130,7 @@
 	$obj_navigation_rec = new dc\record_navigation\RecordMenu();
 
     /* Call and execute delete SP. */            
-    $sql_string = 'EXEC fire_alarm_detail :id,														 
-								:sort_field,
-								:sort_order,
-								:nav_first,
-								:nav_previous,
-								:nav_next,
-								:nav_last';
+    $sql_string = 'EXEC fire_alarm_detail :id';
 
     echo '<!-- ID: '.$obj_navigation_rec->get_id().' -->';
 
@@ -144,13 +138,7 @@
     {   
         $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
 
-        $dbh_pdo_statement->bindValue(':id', $obj_navigation_rec->get_id(), \PDO::PARAM_INT);                    
-        $dbh_pdo_statement->bindValue(':sort_field', NULL, \PDO::PARAM_INT);
-        $dbh_pdo_statement->bindValue(':sort_order', NULL, \PDO::PARAM_INT);						
-        $dbh_pdo_statement->bindValue(':nav_first', NULL, \PDO::PARAM_INT);
-        $dbh_pdo_statement->bindValue(':nav_previous', NULL, \PDO::PARAM_INT);
-        $dbh_pdo_statement->bindValue(':nav_next', NULL, \PDO::PARAM_INT);
-        $dbh_pdo_statement->bindValue(':nav_last', NULL, \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':id', $obj_navigation_rec->get_id(), \PDO::PARAM_INT);
         
         $_obj_data_main = $dbh_pdo_statement->execute();
         $_obj_data_main = $dbh_pdo_statement->fetchObject('data_fire_alarm', array());
