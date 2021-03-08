@@ -120,7 +120,7 @@
 	// Establish sorting object, set defaults, and then get settings
 	// from user (if any).
 	$sorting = new \dc\sorting\Sorting();
-	$sorting->set_sort_field(SORTING_FIELDS::CREATED);
+	$sorting->set_sort_field(SORTING_FIELDS::REPORTED);
 	$sorting->set_sort_order(\dc\sorting\SORTING_ORDER_TYPE::DECENDING);
 	$sorting->populate_from_request();
 	
