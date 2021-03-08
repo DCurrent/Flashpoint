@@ -162,7 +162,7 @@
         $dbh_pdo_statement->bindValue(':create_to', $filter->get_create_t(), \PDO::PARAM_STR);
         $dbh_pdo_statement->bindValue(':update_from', $filter->get_update_f(), \PDO::PARAM_STR);
         $dbh_pdo_statement->bindValue(':update_to', $filter->get_update_t(), \PDO::PARAM_STR);
-        $dbh_pdo_statement->bindValue(':status', $filter->get_status(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':status', STATUS_SELECT::S_PUBLIC, \PDO::PARAM_INT);
         $dbh_pdo_statement->bindValue(':sort_field', $sorting->get_sort_field(), \PDO::PARAM_INT);
         $dbh_pdo_statement->bindValue(':sort_order', $sorting->get_sort_order(), \PDO::PARAM_INT);
         
@@ -239,6 +239,11 @@
                     </tr>
                 </thead>
                 <tfoot>
+                    <tr>
+                    	<th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::REPORTED); ?>">Time Occurred <?php echo $sorting->sorting_markup(SORTING_FIELDS::REPORTED); ?></a></th>
+                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::LOCATION); ?>">Location <?php echo $sorting->sorting_markup(SORTING_FIELDS::LOCATION); ?></a></th>
+                        <th>Details</th>                        
+                    </tr>
                 </tfoot>
                 <tbody>                        
                     <?php						
@@ -285,7 +290,8 @@
 
                         ?>
                                 <tr>
-                                	<td><?php if(is_object($_obj_data_main->get_time_reported()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_time_reported()->getTimestamp()); ?></td>
+                                    <?php $obj_date_time = new DateTime($_obj_data_main->get_time_reported()); ?>
+                                    <td><?php echo date('Y-m-d H:i:s', $obj_date_time->getTimestamp()); ?></td>
                                     <td><?php echo $location_display; ?></td>
                                     <td><?php echo $details_display; ?></td>                                    
                                 </tr>                                    
