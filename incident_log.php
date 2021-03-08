@@ -111,14 +111,7 @@
 	/* Main navigaiton. */
 	$obj_navigation_main = new Navigation();	
 	$obj_navigation_main->generate_markup_nav_public();
-	$obj_navigation_main->generate_markup_footer();	
-	
-	// Set up database.
-	$db_conn_set = new class_db_connect_params();
-	$db_conn_set->set_name(DATABASE::NAME);
-	
-	$db = new class_db_connection($db_conn_set);
-	$query = new class_db_query($db);
+	$obj_navigation_main->generate_markup_footer();
 		
     $paging_config = new \dc\record_navigation\PagingConfig();
     $paging_config->set_url_query_instance($url_query);
