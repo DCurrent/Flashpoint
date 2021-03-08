@@ -4,6 +4,27 @@
 
 	require_once('config.php');
 	
+    /* 
+    * To collect "page control" recordset from
+    * database. Needs rolling into main class 
+    * or offloading to file.
+    */
+    class data_paging
+    {
+        private $page_count = NULL;
+        private $record_count = NULL;
+        
+        public function get_page_count()
+        {
+            return $this->page_count;
+        }
+        
+        public function get_record_count()
+        {
+            return $this->record_count;
+        }
+    }
+
 	interface iPaging
 	{		
 		// Accessors
