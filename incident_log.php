@@ -133,59 +133,64 @@
 	
 	$filter = new class_filter();
 	$filter->populate_from_request();
+
+    $sql_string = 'EXEC fire_alarm_list :page_current,														 
+										:page_rows,
+										:page_last,
+										:row_count_total,										
+										:create_from,
+										:create_to,
+										:update_from,
+										:update_to,
+										:status,
+										:sort_field,
+										:sort_order';	
+	
+    try
+    {   
+        $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
 		
-	$query->set_sql('{call fire_alarm_list(@page_current 		= ?,														 
-										@page_rows 			= ?,
-										@page_last 			= ?,
-										@row_count_total	= ?,										
-										@create_from 		= ?,
-										@create_to 			= ?,
-										@update_from 		= ?,
-										@update_to 			= ?,
-										@status				= ?,
-										@sort_field 		= ?,
-										@sort_order 		= ?)}');
-											
-	$page_last 	= NULL;
-	$row_count 	= NULL;
-	$sort_field 		= $sorting->get_sort_field();
-	$sort_order 		= $sorting->get_sort_order();	
-	
-    $p_paging_current = $paging->get_page_current();
-    $p_row_max = 1000; //$paging->get_row_max();
-    $p_page_last = $page_last;
-    $p_row_count = $row_count;
-    $p_create_f = $filter->get_create_f();
-    $p_create_t = $filter->get_create_t();
-    $p_update_f = $filter->get_update_f();
-    $p_update_t = $filter->get_update_t();
-    $p_status = STATUS_SELECT::S_PUBLIC;
-    $p_sort_field = $sort_field;
-    $p_sort_order = $sort_order;
+        $page_last = NULL;
+        $row_count = NULL;
+        
+	    $dbh_pdo_statement->bindValue(':page_current', $paging->get_page_current(), \PDO::PARAM_INT);
+        // $dbh_pdo_statement->bindValue(':page_rows', $paging->get_row_max(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':page_rows', $paging->get_row_max(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindParam(':page_last', $page_last, \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindParam(':row_count_total', $row_count, \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':create_from', $filter->get_create_f(), \PDO::PARAM_STR);
+        $dbh_pdo_statement->bindValue(':create_to', $filter->get_create_t(), \PDO::PARAM_STR);
+        $dbh_pdo_statement->bindValue(':update_from', $filter->get_update_f(), \PDO::PARAM_STR);
+        $dbh_pdo_statement->bindValue(':update_to', $filter->get_update_t(), \PDO::PARAM_STR);
+        $dbh_pdo_statement->bindValue(':status', $filter->get_status(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':sort_field', $sorting->get_sort_field(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':sort_order', $sorting->get_sort_order(), \PDO::PARAM_INT);
+        
+        $dbh_pdo_statement->execute();
+    }
+    catch(\PDOException $e)
+    {
+        die('Database error : '.$e->getMessage());
+    }
 
-	$params = array(array(&$p_paging_current, 	SQLSRV_PARAM_IN), 
-					array(&$p_row_max, 		SQLSRV_PARAM_IN), 
-					array(&$p_page_last, 		SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
-					array(&$p_row_count, 		SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),					
-					array(&$p_create_f ,		SQLSRV_PARAM_IN),
-					array(&$p_create_t,		SQLSRV_PARAM_IN),
-					array(&$p_update_f,		SQLSRV_PARAM_IN),
-					array(&$p_update_t,		SQLSRV_PARAM_IN),
-					array(&$p_status,		SQLSRV_PARAM_IN),
-					array(&$p_sort_field,	SQLSRV_PARAM_IN),
-					array(&$p_sort_order,	SQLSRV_PARAM_IN));					
+    /*
+    * Build a list of data objects. Each object in the
+    * list represents a row of data from our query.
+    */
+    $_row_object = NULL;
+    $_obj_data_main_list = new \SplDoublyLinkedList();	// Linked list object.
 
-	$query->set_params($params);
-	$query->query();
-	
-	$query->get_line_params()->set_class_name('data_fire_alarm');
-	$_obj_data_main_list = $query->get_line_object_list();
+    while($_row_object = $dbh_pdo_statement->fetchObject('data_fire_alarm', array()))
+    {       
+        $_obj_data_main_list->push($_row_object);
+    }
 
-	// Send control data from procedure to paging object.
-	$paging->set_page_last($page_last);
+	/* 
+    * Send control data from procedure 
+    * to paging object.
+	*/
+    $paging->set_page_last($page_last);
 	$paging->set_row_count_total($row_count);
-
-		
 
 ?>
 
