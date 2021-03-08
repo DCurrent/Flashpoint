@@ -129,8 +129,6 @@
 
     $sql_string = 'EXEC fire_alarm_list :page_current,														 
 										:page_rows,
-										:page_last,
-										:row_count_total,										
 										:create_from,
 										:create_to,
 										:update_from,
@@ -147,10 +145,8 @@
         $row_count = NULL;
         
 	    $dbh_pdo_statement->bindValue(':page_current', $paging->get_page_current(), \PDO::PARAM_INT);
-        // $dbh_pdo_statement->bindValue(':page_rows', $paging->get_row_max(), \PDO::PARAM_INT);
         $dbh_pdo_statement->bindValue(':page_rows', $paging->get_row_max(), \PDO::PARAM_INT);
-        $dbh_pdo_statement->bindParam(':page_last', $page_last, \PDO::PARAM_INT);
-        $dbh_pdo_statement->bindParam(':row_count_total', $row_count, \PDO::PARAM_INT);
+        //$dbh_pdo_statement->bindValue(':page_rows', 1000, \PDO::PARAM_INT);
         $dbh_pdo_statement->bindValue(':create_from', $filter->get_create_f(), \PDO::PARAM_STR);
         $dbh_pdo_statement->bindValue(':create_to', $filter->get_create_t(), \PDO::PARAM_STR);
         $dbh_pdo_statement->bindValue(':update_from', $filter->get_update_f(), \PDO::PARAM_STR);
@@ -178,12 +174,28 @@
         $_obj_data_main_list->push($_row_object);
     }
 
-	/* 
+    /*
+    * Now we need the paging information for 
+    * our paging control.
+    */
+
+    $dbh_pdo_statement->nextRowset();
+
+    $_paging_data = $dbh_pdo_statement->fetchObject('dc\record_navigation\data_paging', array());
+	
+    /* 
     * Send control data from procedure 
     * to paging object.
 	*/
-    $paging->set_page_last($page_last);
-	$paging->set_row_count_total($row_count);
+
+    echo '<!-- get_page_count: '.$_paging_data->get_page_count().' -->';
+    echo '<!-- get_record_count: '.$_paging_data->get_record_count().' -->';
+
+    $paging->set_page_last($_paging_data->get_page_count());
+	$paging->set_row_count_total($_paging_data->get_record_count());
+
+    echo '<!-- $paging->get_page_last: '.$paging->get_page_last().' -->';
+    echo '<!-- $paging->get_row_count: '.$paging->get_row_count().' -->';
 
 ?>
 
@@ -221,6 +233,8 @@
                 <p>This is a list of all reported fire/drill incidents.</p>
             </div> 
                                   
+            <?php echo $paging->generate_paging_markup(); ?>
+            
             <!--div class="table-responsive"-->
             <table class="table">
                 <caption></caption>
@@ -297,7 +311,7 @@
 
             <?php
 
-				echo $paging->generate_paging_markup();
+				echo $paging->get_markup();
 				echo $obj_navigation_main->get_markup_footer(); 
 				echo '<!--Page Time: '.$page_obj->time_elapsed().' seconds-->';
 			?>
