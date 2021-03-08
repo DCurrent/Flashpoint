@@ -255,12 +255,14 @@
                     die('Sql set up error: '.$e->getMessage());
                 }
 				
+                /* 
+                * Populate our main data object with ID the database 
+                * assigned to new record, then commit the transaction.
+                */
+                $_main_data->set_id($dc_yukon_connection->get_member_connection()->lastInsertId());
                 $dc_yukon_connection->get_member_connection()->commit();
-                
-				//$query->get_line_params()->set_class_name('class_fire_alarm_data');
-				//$_main_data = $query->get_line_object();
-				
-				$dialog .= '<p class="alert alert-success">Your incident report was successfully entered. You may enter another report below or leave this page.</p>';
+                                                
+				$dialog .= '<p class="alert alert-success">Your incident report was successfully entered. You may enter another report below or leave this page. <a href="alarm_list_detail.php?id='.$_main_data->get_id().'">Click here</a> to view the new report.</p>';
 			
 				/* 
                 * Set up and send an email alert.
