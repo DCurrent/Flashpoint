@@ -106,71 +106,95 @@
 	/* Page caching. */
 	$page_obj = new \dc\Prudhoe\PageCache();		
 		
-	// Set up navigaiton.
-	$navigation_obj = new class_navigation();
-	$navigation_obj->generate_markup_nav();
-	$navigation_obj->generate_markup_footer();	
+	/* Main navigaiton. */
+	$obj_navigation_main = new Navigation();
+	$obj_navigation_main->generate_markup_nav_public();
+	$obj_navigation_main->generate_markup_footer();	
 	
-	// Set up database.
-	$db_conn_set = new class_db_connect_params();
-	$db_conn_set->set_name(DATABASE::NAME);
+    /* 
+    * Record paging control. Note there is
+    * additional code to receive necessary
+    * control feedback after we get records
+    * from database.
+    */
+    $paging_config = new \dc\record_navigation\PagingConfig();
+    $paging_config->set_url_query_instance($url_query);
+	$paging = new \dc\record_navigation\Paging($paging_config);
 	
-	$db = new class_db_connection($db_conn_set);
-	$query = new class_db_query($db);
-		
-	$paging = new class_paging;
-	
-	// Establish sorting object, set defaults, and then get settings
-	// from user (if any).
-	$sorting = new class_sort_control;
+    /* Record sorting and filtering. */
+	$sorting = new \dc\sorting\Sorting();
 	$sorting->set_sort_field(SORTING_FIELDS::CREATED);
-	$sorting->set_sort_order(SORTING_ORDER_TYPE::DECENDING);
+	$sorting->set_sort_order(\dc\sorting\SORTING_ORDER_TYPE::DECENDING);
 	$sorting->populate_from_request();
 	
 	$filter = new class_filter();
 	$filter->populate_from_request();
 		
-	$query->set_sql('{call fire_alarm_list(@page_current 		= ?,														 
-										@page_rows 			= ?,
-										@page_last 			= ?,
-										@row_count_total	= ?,										
-										@create_from 		= ?,
-										@create_to 			= ?,
-										@update_from 		= ?,
-										@update_to 			= ?,
-										@status				= ?,
-										@sort_field 		= ?,
-										@sort_order 		= ?)}');
-											
-	$page_last 	= NULL;
-	$row_count 	= NULL;
-	$sort_field 		= $sorting->get_sort_field();
-	$sort_order 		= $sorting->get_sort_order();	
-	
-	$params = array(array($paging->get_page_current(), 	SQLSRV_PARAM_IN), 
-					array($paging->get_row_max(), 		SQLSRV_PARAM_IN), 
-					array($page_last, 					SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),
-					array($row_count, 					SQLSRV_PARAM_OUT, SQLSRV_PHPTYPE_INT),					
-					array($filter->get_create_f(),		SQLSRV_PARAM_IN),
-					array($filter->get_create_t(),		SQLSRV_PARAM_IN),
-					array($filter->get_update_f(),		SQLSRV_PARAM_IN),
-					array($filter->get_update_t(),		SQLSRV_PARAM_IN),
-					array($filter->get_status(),		SQLSRV_PARAM_IN),
-					array($sort_field,					SQLSRV_PARAM_IN),
-					array($sort_order,					SQLSRV_PARAM_IN));
+	$sql_string = 'EXEC fire_alarm_list :page_current,														 
+										:page_rows,
+										:create_from,
+										:create_to,
+										:update_from,
+										:update_to,
+										:status,
+										:sort_field,
+										:sort_order';
 
-	$query->set_params($params);
-	$query->query();
-	
-	$query->get_line_params()->set_class_name('class_fire_alarm_data');
-	$_obj_data_main_list = $query->get_line_object_list();
 
-	// Send control data from procedure to paging object.
-	$paging->set_page_last($page_last);
-	$paging->set_row_count_total($row_count);
-
+    try
+    {   
+        $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
 		
+	    $dbh_pdo_statement->bindValue(':page_current', $paging->get_page_current(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':page_rows', $paging->get_row_max(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':create_from', $filter->get_create_f(), \PDO::PARAM_STR);
+        $dbh_pdo_statement->bindValue(':create_to', $filter->get_create_t(), \PDO::PARAM_STR);
+        $dbh_pdo_statement->bindValue(':update_from', $filter->get_update_f(), \PDO::PARAM_STR);
+        $dbh_pdo_statement->bindValue(':update_to', $filter->get_update_t(), \PDO::PARAM_STR);
+        $dbh_pdo_statement->bindValue(':status', $filter->get_status(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':sort_field', $sorting->get_sort_field(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':sort_order', $sorting->get_sort_order(), \PDO::PARAM_INT);
+        
+        $dbh_pdo_statement->execute();      
+    }
+    catch(\PDOException $e)
+    {
+        die('Database error : '.$e->getMessage());
+    }
 
+    /*
+    * Build a list of data objects. Each object in the
+    * list represents a row of data from our query.
+    */
+    $_row_object = NULL;
+    $_obj_data_main_list = new \SplDoublyLinkedList();	// Linked list object.
+
+    $count = 0;
+    while($_row_object = $dbh_pdo_statement->fetchObject('data_fire_alarm', array()))
+    {  
+        $count++;
+        $_obj_data_main_list->push($_row_object);
+    }
+    
+    
+    /*
+    * Now we need the paging information for 
+    * our paging control.
+    */
+
+    try
+    {         
+        $dbh_pdo_statement->nextRowset();        
+        
+        $_paging_data = $dbh_pdo_statement->fetchObject('dc\record_navigation\data_paging', array());
+        
+        $paging->set_page_last($_paging_data->get_page_count());
+        $paging->set_row_count_total($_paging_data->get_record_count());
+    }
+    catch(\PDOException $e)
+    {
+        die('Database error : '.$e->getMessage());
+    }
 ?>
 
 <!DOCtype html>
@@ -181,16 +205,10 @@
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
         <title><?php echo APPLICATION_SETTINGS::NAME; ?></title>        
         
-         <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
-        
-        <!-- jQuery library -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        
-        <!-- Latest compiled JavaScript -->
-        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         
         <style>
 		
@@ -207,7 +225,7 @@
     
     <body>    
         <div id="container" class="container">            
-            <?php echo $navigation_obj->get_markup_nav(); ?>                                                                                
+            <?php echo $obj_navigation_main->get_markup_nav(); ?>                                                                                
             <div class="page-header">
                 <h1>Alarm List</h1>
                 <p>This is a list of all reported fire/drill incidents.</p>
@@ -410,28 +428,26 @@
             <?php
 
 				echo $paging->generate_paging_markup();
-				echo $navigation_obj->get_markup_footer(); 
+				echo $obj_navigation_main->get_markup_footer(); 
 				echo '<!--Page Time: '.$page_obj->time_elapsed().' seconds-->';
 			?>
-        </div><!--container-->        
+        </div><!--container-->  
+        
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        
     <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-40196994-1', 'uky.edu');
-  ga('send', 'pageview');
   
-  $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();
-});
-</script>
+          $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 </body>
 </html>
 
 <?php
-	// Collect and output page markup.
-	$page_obj->markup_from_cache();	
+	/* Collect and output page markup. */
+	$page_obj->markup_and_flush();	
 	$page_obj->output_markup();
 ?>
