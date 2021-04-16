@@ -271,7 +271,7 @@
                 $address  = 'dvcask2@uky.edu, kjcoom0@email.uky.edu, jdel222@uky.edu, jwmonr1@email.uky.edu, richard.peddicord@ky.gov, ggwill2@email.uky.edu, seberr0@email.uky.edu, pjmerr0@email.uky.edu, tross@email.uky.edu, rob.turner@uky.edu, ska248@uky.edu, lee.poore@uky.edu, dwhibb0@uky.edu';
 													
 				$subject = MAILING::SUBJECT;
-				$body = 'An incident has been created or updated. <a href="http://ehs.uky.edu/apps/flashpoint/alarm_list_detail.php?id='.$_main_data->get_id().'">Click here</a> to view details.';
+				$body = 'An incident has been created or updated. <a href="https://ehs.uky.edu/apps/flashpoint/alarm_list_detail.php?id='.$_main_data->get_id().'">Click here</a> to view details.';
 						
 				$headers   = array();
 				$headers[] = "MIME-Version: 1.0";

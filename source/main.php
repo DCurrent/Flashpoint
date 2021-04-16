@@ -16,7 +16,7 @@
 	$config_file_info = pathinfo(php_ini_loaded_file());
 	$config_file_full = $config_file_info['dirname'].'\dc_flashpoint.ini';
 
-	// Load class using namespace.
+	/* Load class using namespace. */
 	function app_load_class($class_name_arg) 
 	{
         $file_name = '';
@@ -38,32 +38,35 @@
 		**/
         if ($last_namespace_position)
 		{
-			// Namespace is the portion of of class name starting
-			// from 0 and ending at last namespace separator.
+			/*
+            * Namespace is the portion of of class name starting
+			* from 0 and ending at last namespace separator.
+            */
             $namespace = substr($class_name, 0, $last_namespace_position);
 			
-			// Crop namespace from class name to leave only class name itself.
+			/* Crop namespace from class name to leave only class name itself. */
             $class_name = substr($class_name, $last_namespace_position + 1);
 			
-			// Add directory separator to namespace to start a file path.
+			/* Add directory separator to namespace to start a file path. */
             $file_name = str_replace('\\', DIRECTORY_SEPARATOR, $namespace).DIRECTORY_SEPARATOR;
 			
 		}
 		
-		/**
+		/*
 		* Add suffix to file name, then add include path to build
 		* full file name path.
-		**/
+		*/
         $file_name .= $class_name.'.php';
 				
         $file_name_full = $include_path . DIRECTORY_SEPARATOR . $file_name;
 		
-		/** 
+		/*
 		* If complete file path exists, then load it. 
 		* Otherwise just die on the spot. It's a little
 		* redudant since require() would fail anyway, but
 		* I'd rather control what the error looks like.
-		**/
+		*/
+        
         if (file_exists($file_name_full)) 
 		{
             require($file_name_full);
