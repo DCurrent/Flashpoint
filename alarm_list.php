@@ -357,7 +357,7 @@
                         <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::LOCATION); ?>">Location <?php echo $sorting->sorting_markup(SORTING_FIELDS::LOCATION); ?></a></th>
                         <th>Details</th>
                         <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::STATUS); ?>">Status <?php echo $sorting->sorting_markup(SORTING_FIELDS::STATUS); ?></a></th>
-                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::CREATED); ?>">Create <?php echo $sorting->sorting_markup(SORTING_FIELDS::CREATED); ?></a></th>
+                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::CREATED); ?>">Created <?php echo $sorting->sorting_markup(SORTING_FIELDS::CREATED); ?></a></th>
                                                 
                     </tr>
                 </thead>
@@ -367,7 +367,7 @@
                         <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::LOCATION); ?>">Location <?php echo $sorting->sorting_markup(SORTING_FIELDS::LOCATION); ?></a></th>
                         <th>Details</th>
                         <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::STATUS); ?>">Status <?php echo $sorting->sorting_markup(SORTING_FIELDS::STATUS); ?></a></th>
-                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::CREATED); ?>">Create <?php echo $sorting->sorting_markup(SORTING_FIELDS::CREATED); ?></a></th>
+                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::CREATED); ?>">Created <?php echo $sorting->sorting_markup(SORTING_FIELDS::CREATED); ?></a></th>
                                                 
                     </tr>
                 </tfoot>
@@ -443,7 +443,7 @@
                                     <td><?php echo $location_display; ?></td>
                                     <td><?php echo $details_display; ?></td>
                                     <td><?php echo $status[$_obj_data_main->get_status()]; ?></td>
-                                    <td><?php if(is_object($_obj_data_main->get_log_create()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_log_create()->getTimestamp()); ?></td>
+                                    <td><?php echo $_obj_data_main->get_log_update(); ?></td>
                                                                         
                                 </tr>                                    
                         <?php								
