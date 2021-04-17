@@ -79,11 +79,13 @@ async function options_update($event, $element_id, $use_current) {
     $data = $element_main.data();
     
     for(var i in $data)
-	{       
+	{         
         $append = $('<input />').attr('type', 'hidden')
 			.attr('name', i.replace(ELEMENT_DATA_PREFIX,''))
 			.attr('value', $data[i]);
-                
+        
+        //alert('Name: ' + $append.attr('name') + ', value: ' + $append.attr('value'));
+        
         /* 
         * We don't always want to send the
         * current value.
@@ -95,7 +97,8 @@ async function options_update($event, $element_id, $use_current) {
                 
 		$form.append($append);
 	}
-    	
+    
+
 	/* 
     * Post to option generation source script. When
     * the script is complete we can append its results
@@ -132,7 +135,7 @@ async function options_update($event, $element_id, $use_current) {
     });	
     
     let result = await promise; // wait until the promise resolves (*)
-
+    callback();
    // alert('wait');
 	
 }
