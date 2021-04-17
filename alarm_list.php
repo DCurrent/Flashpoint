@@ -210,6 +210,10 @@
         <link rel="stylesheet" href="source/css/style.css" />
         <link rel="stylesheet" href="source/css/print.css" media="print" />
         
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        
         <style>
 		
 .in.collapse+a.btn.showdetails:before
@@ -340,16 +344,67 @@
                             </form>                                       
                         </div>
                     </div>
-                </div>
-            
-            
+                </div>     
             
             <br />
             
-            <a href="alarm.php?nav_command=<?php echo dc\record_navigation\RECORD_NAV_COMMANDS::NEW_BLANK; ?>" class="btn btn-success btn-block" data-toggle="tooltip" title="Click here to start entering a new ticket."><span class="glyphicon glyphicon-plus"></span> New Incident</a>
-          
+            <?php
+				// Clickable rows. Clicking on table rows
+				// should take user to a detail page for the
+				// record in that row. To do this we first get
+				// the base name of this file, and remove "list".
+				// 
+				// The detail file will always have same name 
+				// without "list". Example: area.php, area_list.php
+				//
+				// Once we have the base name, we can use script to
+				// make table rows clickable by class selector
+				// and passing a completed URL (see the <tr> in
+				// data table we are making clickable).
+				//
+				// Just to ease in development, we verify the detail
+				// file exists before we actually include the script
+				// and build a complete URL string. That way if the
+				// detail file is not yet built, clicking on a table
+				// row does nothing at all instead of giving the end
+				// user an ugly 404 error.
+				//
+				// Lastly, if the base name exists we also build a 
+				// "new item" button that takes user directly
+				// to detail page with a blank record.	
+			 
+				$target_url 	= '#';
+				$target_name	= 'alarm_entry.php'; //basename(__FILE__, '_list.php').'.php';
+				$target_file	= __DIR__.'/'.$target_name;				
+				
+				// Does the file exisit? If so we can
+				// use the URL, script, and new 
+				// item button.
+				if(file_exists($target_file))
+				{
+					$target_url = $target_name;
+				?>
+                	<script>
+						// Clickable table row.
+						jQuery(document).ready(function($) {
+                            
+                            //alert "ready.";
+                            
+							$(".clickable-row").click(function() {
+                                //alert '<?php echo $target_url; ?>?id=' + $(this).data("href");
+								window.document.location = '<?php echo $target_url; ?>?id=' + $(this).data("href");
+							});
+						});
+					</script>
+                                
+                    <a href="<?php echo $target_url; ?>&#63;nav_command=<?php echo \dc\record_navigation\RECORD_NAV_COMMANDS::NEW_BLANK;?>" class="btn btn-success btn-block" data-toggle="tooltip" title="Click here to start entering a new ticket."><span class="glyphicon glyphicon-plus"></span> New Incident</a>
+                <?php
+				}
+				
+			?>
+                  
             <!--div class="table-responsive"-->
-            <table class="table">
+            <table class="table table-hover">
                 <caption></caption>
                 <thead>
                     <tr>
@@ -439,7 +494,7 @@
 								}
 
                         ?>
-                                <tr class="<?php echo $row_class[$_obj_data_main->get_status()]; ?>">
+                                <tr class="clickable-row <?php echo $row_class[$_obj_data_main->get_status()]; ?>" role="button" data-href="<?php echo $_obj_data_main->get_id(); ?>">
                                     <td><?php echo $label_display; ?></td>
                                     <td><?php echo $location_display; ?></td>
                                     <td><?php echo $details_display; ?></td>
@@ -462,9 +517,7 @@
 			?>
         </div><!--container-->  
         
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        
         
     <script>
   
