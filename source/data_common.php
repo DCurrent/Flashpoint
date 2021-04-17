@@ -84,10 +84,15 @@
 			$this->label = $value;
 		}
 		
-		//public function set_log_create($value)
-		//{
-		//	$this->log_create = $value;
-		//}
+		public function set_log_create($value)
+		{
+			$this->log_create = $value;
+		}
+        
+        public function set_log_create_by($value)
+		{
+			$this->log_create_by = $value;
+		}
 		
 		public function set_log_update($value)
 		{
