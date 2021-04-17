@@ -169,9 +169,11 @@
                 try                   
                 {   
                        
-                   $sql_string = 'EXEC fire_alarm_update :id, 
+                   $sql_string = 'EXEC dc_flashpoint_fire_alarm_update :id, 
                                                         :label,
                                                         :details,                                                        
+                                                        :log_create,                                                        
+                                                        :log_create_by,
                                                         :log_update,                                                        
                                                         :log_update_by,
                                                         :log_update_ip,
@@ -204,6 +206,8 @@
                     $dbh_pdo_statement->bindValue(':id', -1, \PDO::PARAM_INT);                    
                     $dbh_pdo_statement->bindValue(':label', $_main_data->get_label(), \PDO::PARAM_STR);
                     $dbh_pdo_statement->bindValue(':details', $_main_data->get_details(), \PDO::PARAM_STR);						
+                    $dbh_pdo_statement->bindValue(':log_create', date('Y-m-d H:i:s'), \PDO::PARAM_STR);
+                    $dbh_pdo_statement->bindValue(':log_create_by', $access_obj->get_account(), \PDO::PARAM_STR);
                     $dbh_pdo_statement->bindValue(':log_update', date('Y-m-d H:i:s'), \PDO::PARAM_STR);
                     $dbh_pdo_statement->bindValue(':log_update_by', $access_obj->get_account(), \PDO::PARAM_STR);
                     
@@ -231,7 +235,23 @@
                     $dbh_pdo_statement->bindValue(':injury_desc', $_main_data->get_injury_desc(), \PDO::PARAM_STR);
                     $dbh_pdo_statement->bindValue(':property_damage', $_main_data->get_property_damage(), \PDO::PARAM_STR);
                     $dbh_pdo_statement->bindValue(':responsible_party', $_main_data->get_responsible_party(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindValue(':public_details', $_main_data->get_public_details(), \PDO::PARAM_STR);
+                    
+                    /* 
+                    * Default to populating Public Details 
+                    * with (non public) Details. This is so 
+                    * admin has a template to work with when 
+                    * entering Public Details later.
+                    */
+                    
+                    if($_main_data->get_public_details()=='' || !$_main_data->get_public_details())
+                    {
+                        $dbh_pdo_statement->bindValue(':public_details', $_main_data->get_details(), \PDO::PARAM_STR);
+                    }
+                    else
+                    {
+                        $dbh_pdo_statement->bindValue(':public_details', $_main_data->get_public_details(), \PDO::PARAM_STR);
+                    }
+                    
                     $dbh_pdo_statement->bindValue(':status', $_main_data->get_status(), \PDO::PARAM_INT);                    
                     
                 }
@@ -355,7 +375,7 @@
           
           		<?php
 					$lookup = new \dc\stoeckl\status;
-				echo $_main_data->get_log_update_by();
+				
 					if($_main_data->get_log_update_by())
 					{
 						//$lookup->lookup($_main_data->get_log_update_by());
