@@ -237,7 +237,7 @@
                     $dbh_pdo_statement->bindValue(':property_damage', $_main_data->get_property_damage(), \PDO::PARAM_STR);
                     $dbh_pdo_statement->bindValue(':responsible_party', $_main_data->get_responsible_party(), \PDO::PARAM_STR);
                     $dbh_pdo_statement->bindValue(':public_details', $_main_data->get_public_details(), \PDO::PARAM_STR);
-                    $dbh_pdo_statement->bindValue(':status', $_main_data->get_status(), \PDO::PARAM_INT);                    
+                    $dbh_pdo_statement->bindValue(':status', $_main_data->get_status(), \PDO::PARAM_INT);   
                     
                 }
                 catch(\PDOException $e)
@@ -267,25 +267,8 @@
                 $_main_data->set_id($dc_yukon_connection->get_member_connection()->lastInsertId());
                 $dc_yukon_connection->get_member_connection()->commit();
                                                 
-				$dialog .= '<p class="alert alert-success">Report updated!</p>';
-			
-				/* 
-                * Set up and send an email alert.
-				*/
-                
-                $address  = 'dvcask2@uky.edu, kjcoom0@email.uky.edu, jdel222@uky.edu, jwmonr1@email.uky.edu, richard.peddicord@ky.gov, ggwill2@email.uky.edu, seberr0@email.uky.edu, pjmerr0@email.uky.edu, tross@email.uky.edu, rob.turner@uky.edu, ska248@uky.edu, lee.poore@uky.edu, dwhibb0@uky.edu';
-													
-				$subject = MAILING::SUBJECT;
-				$body = 'An incident has been created or updated. <a href="https://ehs.uky.edu/apps/flashpoint/alarm_list_detail.php?id='.$_main_data->get_id().'">Click here</a> to view details.';
-						
-				$headers   = array();
-				$headers[] = "MIME-Version: 1.0";
-				$headers[] = "Content-type: text/html; charset=iso-8859-1";
-				if(MAILING::FROM)	$headers[] = "From: ".MAILING::FROM;
-				if(MAILING::BCC)	$headers[] = "Bcc: ".MAILING::BCC;
-				if(MAILING::CC) 	$headers[] = "Cc: ".MAILING::CC;	
-
-				mail($address, MAILING::SUBJECT.' - Incident Alert', $body, implode("\r\n", $headers));
+				$dialog .= '<p class="alert alert-success">Report updated!</p>';		
+				
 			}
 			
 			break;			
@@ -403,6 +386,10 @@
             <?php echo $dialog; ?>
             
             <form class="" role="form" method="post" enctype="multipart/form-data">
+                
+                <!-- Hidden fields to pass data when we update. -->
+                <input type="hidden" name="log_create" id="log_create" value="<?php echo $_main_data->get_log_create(); ?>" />
+                <input type="hidden" name="log_create_by" id="log_create_by" value="<?php echo $_main_data->get_log_create_by(); ?>" />
                 
                 <div class="form-group">
                 	<div class="col-sm-12">
@@ -545,10 +532,10 @@
                         Current area value: <?php echo $_main_data->get_room_code(); ?>
                     -->
                     <div class="form-group row">
-                        <label class="col-sm-2" for="room_code">Area <span class="text-danger">*</span></label>
+                        <label class="col-sm-2" for="room_code_temp">Area (in progress)<span class="text-danger">*</span></label>
                         <div class="col-sm-10">
-                            <select name="room_code" 
-                                id="room_code" 
+                            <select name="room_code_temp" 
+                                id="room_code_temp" 
                                 data-dc_options_update_value_current="<?php echo $_main_data->get_room_code(); ?>" 
                                 data-dc_options_update_source_url="option_list_area.php"                                 
                                 data-dc_options_update_prefix_options='<option value="">Select Room/Area/Lab</option>'
@@ -558,6 +545,13 @@
                                     <option value="">Select Room/Area/Lab</option>                                  							
                             </select> 
                         </div>                                   
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="col-sm-2" for="room_code">Area</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control building_filter"  name="room_code" id="label" placeholder="" value="<?php echo $_main_data->get_room_code(); ?>">
+                        </div>
                     </div>
                     
                     <div class="form-group row">
@@ -874,7 +868,7 @@
     
     <script src="source/options_update.js"></script>
         
-        <!-- DateTime Picker (https://datebox.jtsage.dev/) -->)
+    <!-- DateTime Picker (https://datebox.jtsage.dev/) -->)
     <script src="https://cdn.jsdelivr.net/npm/jtsage-datebox-bootstrap4@5.3.3/jtsage-datebox.min.js" type="text/javascript"></script>
 
         
@@ -895,7 +889,7 @@
                     if($_main_data->get_room_code() && $_main_data->get_building_code())
                     {
                 ?>
-                        options_update(event, '#room_code', 1, <?php $_main_data->get_building_code(); ?>);
+                        //options_update(event, '#room_code', 1, <?php $_main_data->get_building_code(); ?>);
                 <?php
                     }
                 ?>
@@ -913,7 +907,7 @@
         
       $('.room_filter').change(function(event)
         {	
-            options_update(event, '#room_code', 1);	
+            //options_update(event, '#room_code', 1);	
         });
     
 </script>
