@@ -374,7 +374,7 @@
 				// to detail page with a blank record.	
 			 
 				$target_url 	= '#';
-				$target_name	= 'alarm_entry.php'; //basename(__FILE__, '_list.php').'.php';
+				$target_name	= basename(__FILE__, '_list.php').'.php';
 				$target_file	= __DIR__.'/'.$target_name;				
 				
 				// Does the file exisit? If so we can
