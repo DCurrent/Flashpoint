@@ -130,7 +130,7 @@
 	$filter = new class_filter();
 	$filter->populate_from_request();
 		
-	$sql_string = 'EXEC fire_alarm_list :page_current,														 
+	$sql_string = 'EXEC dc_flashpoint_fire_alarm_list :page_current,														 
 										:page_rows,
 										:create_from,
 										:create_to,
@@ -322,7 +322,7 @@
                                                 <label><input 
                                                         type="radio" 
                                                         name="status" 
-                                                        value=""                                             
+                                                        value="-1"                                             
                                                         <?php if($filter->get_status() == NULL) echo ' checked ';?>> All</label>
                                             </div>                   
                                     </div>
@@ -375,9 +375,10 @@
                     <?php						
 						$_obj_data_main = NULL;
 					
-						$row_class = array(1 => '',
-											2 => 'alert-warning',
-											NULL => '');
+						$row_class = array(0 => '',
+                                            1 => '',
+											2 => 'alert-warning',											
+                                            NULL => '');
 						
 						$status = array(FALSE => 'Private',
 											TRUE => 'Public',
