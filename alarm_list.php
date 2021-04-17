@@ -230,108 +230,119 @@
                 <h1>Alarm List</h1>
                 <p>This is a list of all reported fire/drill incidents.</p>
             </div> 
-                    
-            <div id="filters">
             
-	        <legend>Filters <a type="button" class="btn" data-toggle="collapse" data-target="#filter">(Show/Hide)</a></legend>
-            <form class="form-horizontal collapse" role="form" id="filter" method="get" enctype="multipart/form-data">
+            <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 id="h41" class="panel-title">
+                        <a class="accordion-toggle" data-toggle="collapse" href="#collapse_module_1"><span class="glyphicon glyphicon-filter"></span><span class="glyphicon glyphicon-menu-down pull-right"></span> Filters</a>
+                        </h4>
+                    </div>
+                
+                	<div style="" id="collapse_module_1" class="panel-collapse collapse">
+                        <div class="panel-body"> 
+                                                        
+                            <!--legend></legend-->                           
+                            <form class="form-horizontal" role="form" id="filter" method="get" enctype="multipart/form-data">
             	                
-                <input type="hidden" name="field" value="<?php echo $sorting->get_sort_field(); ?>" />
-                <input type="hidden" name="order" value="<?php echo $sorting->get_sort_order(); ?>" />
-            
-            	<div class="form-group">
-                	<label class="control-label col-sm-2" for="created">Created (from):</label>
-                	<div class="col-sm-4">
-                		<input 
-                        	type	="datetime-local" 
-                            class	="form-control"  
-                            name	="create_f" 
-                            id		="create_f" 
-                            placeholder="yyyy-mm-dd"
-                            value="<?php echo $filter->get_create_f(); ?>">
-                	</div>
-                
-                	<label class="control-label col-sm-2" for="created">Created (to):</label>
-                	<div class="col-sm-4">
-                		<input 
-                        	type	="datetime-local" 
-                            class	="form-control"  
-                            name	="create_t" 
-                            id		="create_t" 
-                            placeholder="yyyy-mm-dd"
-                            value="<?php echo $filter->get_create_t(); ?>">
-                	</div>
-                </div>
-                
-                <div class="form-group">
-                	<label class="control-label col-sm-2" for="created">Updated (from):</label>
-                	<div class="col-sm-4">
-                		<input 
-                        	type	="datetime-local" 
-                            class	="form-control"  
-                            name	="update_f" 
-                            id		="update_f" 
-                            placeholder="yyyy-mm-dd"
-                            value="<?php echo $filter->get_update_f(); ?>">
-                	</div>
-                
-                	<label class="control-label col-sm-2" for="created">Updated (to):</label>
-                	<div class="col-sm-4">
-                		<input 
-                        	type	="datetime-local" 
-                            class	="form-control"  
-                            name	="update_t" 
-                            id		="update_t" 
-                            placeholder="yyyy-mm-dd"
-                            value="<?php echo $filter->get_update_t(); ?>">
-                	</div>
-                </div>
-                
-                <div class="form-group">
-                	<label class="control-label col-sm-2" for="status">Status:</label>
-                	<div class="col-sm-10">
-                    	    
-                            <div class="radio">
+                                <input type="hidden" name="field" value="<?php echo $sorting->get_sort_field(); ?>" />
+                                <input type="hidden" name="order" value="<?php echo $sorting->get_sort_order(); ?>" />
                             
-                            	<label><input 
-                                        type="radio" 
-                                        name="status" 
-                                        value="<?php echo STATUS_SELECT::S_PRIVATE; ?>"                                             
-                                        <?php if($filter->get_status() == STATUS_SELECT::S_PRIVATE) echo ' checked ';?>>Private</label>
-                       	 	</div>
-                                       
-                       		<div class="radio">
-                            
-                            	<label><input 
-                                        type="radio" 
-                                        name="status" 
-                                        value="<?php echo STATUS_SELECT::S_PUBLIC; ?>"                                             
-                                        <?php if($filter->get_status() == STATUS_SELECT::S_PUBLIC) echo ' checked ';?>>Public</label>
-                       	 	</div>                        
-                        		
-                            <div class="radio">
-                        
-                           		<label><input 
-                                        type="radio" 
-                                        name="status" 
-                                        value=""                                             
-                                        <?php if($filter->get_status() == NULL) echo ' checked ';?>>All</label>
-                       	 	</div>                   
-                	</div>
-				</div>
-                
-                <button 
-                                type	="submit"
-                                class 	="btn btn-primary btn-block" 
-                                name	="set_filter" 
-                                id		="set_filter"
-                                title	="Apply selected filters to list."
-                                >
-                                <span class="glyphicon glyphicon-filter"></span>Apply Filters</button>       
-                    
-            </form>
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-2" for="created">Created (from)</label>
+                                    <div class="col-sm-4">
+                                        <input 
+                                            type	="datetime-local" 
+                                            class	="form-control"  
+                                            name	="create_f" 
+                                            id		="create_f" 
+                                            placeholder="yyyy-mm-dd"
+                                            value="<?php echo $filter->get_create_f(); ?>">
+                                    </div>
+                                
+                                    <label class="control-label col-sm-2" for="created">Created (to)</label>
+                                    <div class="col-sm-4">
+                                        <input 
+                                            type	="datetime-local" 
+                                            class	="form-control"  
+                                            name	="create_t" 
+                                            id		="create_t" 
+                                            placeholder="yyyy-mm-dd"
+                                            value="<?php echo $filter->get_create_t(); ?>">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    <label class="control-label col-sm-2" for="created">Updated (from)</label>
+                                    <div class="col-sm-4">
+                                        <input 
+                                            type	="datetime-local" 
+                                            class	="form-control"  
+                                            name	="update_f" 
+                                            id		="update_f" 
+                                            placeholder="yyyy-mm-dd"
+                                            value="<?php echo $filter->get_update_f(); ?>">
+                                    </div>
+                                
+                                    <label class="control-label col-sm-2" for="created">Updated (to)</label>
+                                    <div class="col-sm-4">
+                                        <input 
+                                            type	="datetime-local" 
+                                            class	="form-control"  
+                                            name	="update_t" 
+                                            id		="update_t" 
+                                            placeholder="yyyy-mm-dd"
+                                            value="<?php echo $filter->get_update_t(); ?>">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="status">Status</label>
+                                    <div class="col-sm-10">
+
+                                            <div class="radio">
+
+                                                <label><input 
+                                                        type="radio" 
+                                                        name="status" 
+                                                        value="<?php echo STATUS_SELECT::S_PRIVATE; ?>"                                             
+                                                        <?php if($filter->get_status() == STATUS_SELECT::S_PRIVATE) echo ' checked ';?>> Private</label>
+                                            </div>
+
+                                            <div class="radio">
+
+                                                <label><input 
+                                                        type="radio" 
+                                                        name="status" 
+                                                        value="<?php echo STATUS_SELECT::S_PUBLIC; ?>"                                             
+                                                        <?php if($filter->get_status() == STATUS_SELECT::S_PUBLIC) echo ' checked ';?>> Public</label>
+                                            </div>                        
+
+                                            <div class="radio">
+
+                                                <label><input 
+                                                        type="radio" 
+                                                        name="status" 
+                                                        value=""                                             
+                                                        <?php if($filter->get_status() == NULL) echo ' checked ';?>> All</label>
+                                            </div>                   
+                                    </div>
+                                </div>
+                                
+                                <button 
+                                                type	="submit"
+                                                class 	="btn btn-primary btn-block" 
+                                                name	="set_filter" 
+                                                id		="set_filter"
+                                                title	="Apply selected filters to list."
+                                                >
+                                                <span class="glyphicon glyphicon-filter"></span>Apply Filters</button>       
+                                    
+                            </form>                                       
+                        </div>
+                    </div>
+                </div>
             
-            </div>
+            
             
             <br />
             
@@ -346,12 +357,19 @@
                         <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::LOCATION); ?>">Location <?php echo $sorting->sorting_markup(SORTING_FIELDS::LOCATION); ?></a></th>
                         <th>Details</th>
                         <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::STATUS); ?>">Status <?php echo $sorting->sorting_markup(SORTING_FIELDS::STATUS); ?></a></th>
-                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::CREATED); ?>">Created <?php echo $sorting->sorting_markup(SORTING_FIELDS::CREATED); ?></a></th>
-                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::UPDATED); ?>">Updated <?php echo $sorting->sorting_markup(SORTING_FIELDS::UPDATED); ?></a></th>
-                        <th></th>
+                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::CREATED); ?>">Create <?php echo $sorting->sorting_markup(SORTING_FIELDS::CREATED); ?></a></th>
+                                                
                     </tr>
                 </thead>
                 <tfoot>
+                    <tr>
+                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::NAME); ?>">Name <?php echo $sorting->sorting_markup(SORTING_FIELDS::NAME); ?></a></th>
+                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::LOCATION); ?>">Location <?php echo $sorting->sorting_markup(SORTING_FIELDS::LOCATION); ?></a></th>
+                        <th>Details</th>
+                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::STATUS); ?>">Status <?php echo $sorting->sorting_markup(SORTING_FIELDS::STATUS); ?></a></th>
+                        <th><a href="<?php echo $sorting->sort_url(SORTING_FIELDS::CREATED); ?>">Create <?php echo $sorting->sorting_markup(SORTING_FIELDS::CREATED); ?></a></th>
+                                                
+                    </tr>
                 </tfoot>
                 <tbody>                        
                     <?php						
@@ -372,13 +390,27 @@
 							{						
 								$_obj_data_main = $_obj_data_main_list->current();							
 								
-								// Let's limit how much is shown in the table to keep row height resonable.
-								$details_display = $_obj_data_main->get_details();
-																
-								//if (strlen($details_display) > 150)
-								//{
-   								//	$details_display = substr($details_display, 0, 147) . '...';
-								//}
+                                /* 
+                                * Let's limit how much is shown in the table 
+                                * to keep row height resonable.
+                                */
+								$label_display = strip_tags($_obj_data_main->get_label());
+											
+								if (strlen($label_display) > 13)
+								{
+   									$label_display = substr($label_display, 0, 10) . '...';
+								}
+                                
+								/* 
+                                * Let's limit how much is shown in the table 
+                                * to keep row height resonable.
+                                */
+								$details_display = strip_tags($_obj_data_main->get_details());
+											
+								if (strlen($details_display) > 50)
+								{
+   									$details_display = substr($details_display, 0, 47) . '...';
+								}
 								
 								$location_display 	= NULL;
 								$room_id_display	= NULL;
@@ -407,16 +439,12 @@
 
                         ?>
                                 <tr class="<?php echo $row_class[$_obj_data_main->get_status()]; ?>">
-                                    <td><?php echo $_obj_data_main->get_label(); ?></td>
+                                    <td><?php echo $label_display; ?></td>
                                     <td><?php echo $location_display; ?></td>
                                     <td><?php echo $details_display; ?></td>
                                     <td><?php echo $status[$_obj_data_main->get_status()]; ?></td>
                                     <td><?php if(is_object($_obj_data_main->get_log_create()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_log_create()->getTimestamp()); ?></td>
-                                    <td><?php if(is_object($_obj_data_main->get_log_update()) === TRUE) echo date('Y-m-d H:i:s', $_obj_data_main->get_log_update()->getTimestamp()); ?></td>
-                                    <td><a	href		="alarm.php?id=<?php echo $_obj_data_main->get_id(); ?>" 
-                                            class		="btn btn-info"
-                                            title		="View details or edit this item."
-                                            ><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                                                                        
                                 </tr>                                    
                         <?php								
                         	}
