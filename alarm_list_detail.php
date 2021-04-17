@@ -130,7 +130,7 @@
 	$obj_navigation_rec = new dc\record_navigation\RecordMenu();
 
     /* Call and execute delete SP. */            
-    $sql_string = 'EXEC fire_alarm_detail :id';
+    $sql_string = 'EXEC dc_flashpoint_fire_alarm_detail :id';
 
     echo '<!-- ID: '.$obj_navigation_rec->get_id().' -->';
 
@@ -194,7 +194,7 @@
 
         $dbh_pdo_statement = $dc_yukon_connection->get_member_connection()->prepare($sql_string);
         
-        $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_fire(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':id', $_obj_data_main->get_cause(), \PDO::PARAM_INT);
         
         $_obj_data_display = $dbh_pdo_statement->execute();
 
