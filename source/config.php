@@ -47,6 +47,13 @@
         const S_PRIVATE	= 0;
 	}
 
+    abstract class INCIDENT_SELECT
+	{		
+		const DRILL  = 6; 
+        const FIRE	= 1;
+        const UNKNOWN  = 8;
+	}
+
 	abstract class SORTING_FIELDS
 	{
 		const NAME 		= 1;

@@ -10,6 +10,7 @@
 			$create_t	= NULL,
 			$update_f	= NULL,
 			$update_t 	= NULL,
+            $fire_type  = NULL,
 			$status		= NULL;
 		
 		// Populate members from $_REQUEST.
@@ -61,7 +62,19 @@
 		{
 			return $this->status;
 		}
+        
+        /* Fire type. */
+        public function get_fire_type()
+        {
+            return $this->fire_type;
+        }
+        
+        public function set_fire_type($value)
+        {
+            $this->fire_type = $value;
+        }
 		
+        
 		public function set_create_f($value)
 		{
 			if($this->validateDate($value) === TRUE)
@@ -137,6 +150,7 @@
 										:update_from,
 										:update_to,
 										:status,
+                                        :fire,
 										:sort_field,
 										:sort_order';
 
@@ -152,6 +166,7 @@
         $dbh_pdo_statement->bindValue(':update_from', $filter->get_update_f(), \PDO::PARAM_STR);
         $dbh_pdo_statement->bindValue(':update_to', $filter->get_update_t(), \PDO::PARAM_STR);
         $dbh_pdo_statement->bindValue(':status', $filter->get_status(), \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':fire', $filter->get_fire_type(), \PDO::PARAM_INT);
         $dbh_pdo_statement->bindValue(':sort_field', $sorting->get_sort_field(), \PDO::PARAM_INT);
         $dbh_pdo_statement->bindValue(':sort_order', $sorting->get_sort_order(), \PDO::PARAM_INT);
         
@@ -327,8 +342,50 @@
                                                         type="radio" 
                                                         name="status" 
                                                         value="-1"                                             
-                                                        <?php if($filter->get_status() == NULL) echo ' checked ';?>> All</label>
+                                                        <?php if($filter->get_status() == NULL || $filter->get_status() == -1) echo ' checked ';?>> All</label>
                                             </div>                   
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="fire">Type of Incident</label>
+                                    <div class="col-sm-10">
+
+                                            <div class="radio">
+
+                                                <label><input 
+                                                        type="radio" 
+                                                        name="fire_type" 
+                                                        value="<?php echo INCIDENT_SELECT::DRILL; ?>"                                             
+                                                        <?php if($filter->get_fire_type() == INCIDENT_SELECT::DRILL) echo ' checked ';?>> Drill</label>
+                                            </div>
+
+                                            <div class="radio">
+
+                                                <label><input 
+                                                        type="radio" 
+                                                        name="fire_type" 
+                                                        value="<?php echo INCIDENT_SELECT::FIRE; ?>"                                             
+                                                        <?php if($filter->get_fire_type() == INCIDENT_SELECT::FIRE) echo ' checked ';?>> Fire</label>
+                                            </div>                        
+
+                                            <div class="radio">
+
+                                                <label><input 
+                                                        type="radio" 
+                                                        name="fire_type" 
+                                                        value="<?php echo INCIDENT_SELECT::UNKNOWN; ?>"                                             
+                                                        <?php if($filter->get_fire_type() == INCIDENT_SELECT::UNKNOWN) echo ' checked ';?>> Unknown</label>
+                                            </div>  
+                                        
+                                            <div class="radio">
+
+                                                <label><input 
+                                                        type="radio" 
+                                                        name="fire_type" 
+                                                        value="-1"                                             
+                                                        <?php if($filter->get_fire_type() == NULL) echo ' checked ';?>> All</label>
+                                            </div>
                                     </div>
                                 </div>
                                 
@@ -400,9 +457,15 @@
                     <a href="<?php echo $target_url; ?>&#63;nav_command=<?php echo \dc\record_navigation\RECORD_NAV_COMMANDS::NEW_BLANK;?>" class="btn btn-success btn-block" data-toggle="tooltip" title="Click here to start entering a new ticket."><span class="glyphicon glyphicon-plus"></span> New Incident</a>
                 <?php
 				}
-				
-			?>
-                  
+				?>
+            
+                <br />                
+                <?php      
+                    echo $paging->generate_paging_markup();
+            
+			    ?>
+                <br /><br />         
+            
             <!--div class="table-responsive"-->
             <table class="table table-hover">
                 <caption></caption>
@@ -511,7 +574,7 @@
 
             <?php
 
-				echo $paging->generate_paging_markup();
+				echo $paging->get_markup();
 				echo $obj_navigation_main->get_markup_footer(); 
 				echo '<!--Page Time: '.$page_obj->time_elapsed().' seconds-->';
 			?>

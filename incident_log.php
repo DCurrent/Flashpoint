@@ -9,6 +9,7 @@
 			$create_t	= NULL,
 			$update_f	= NULL,
 			$update_t 	= NULL,
+            $fire_type  = NULL,
 			$status		= NULL;
 		
 		// Populate members from $_REQUEST.
@@ -56,6 +57,18 @@
 			return $this->update_t;
 		}
 		
+        /* Fire type */
+        public function get_fire_type()
+        {
+            return $this->fire_type;
+        }
+        
+        public function set_fire_type($value)
+        {
+            $this->fire_type = $value;
+        }
+        
+        
 		public function get_status()
 		{
 			return $this->status;
@@ -127,13 +140,14 @@
 	$filter = new class_filter();
 	$filter->populate_from_request();
 
-    $sql_string = 'EXEC fire_alarm_list :page_current,														 
+    $sql_string = 'EXEC dc_flashpoint_fire_alarm_list :page_current,														 
 										:page_rows,
 										:create_from,
 										:create_to,
 										:update_from,
 										:update_to,
 										:status,
+                                        :fire,
 										:sort_field,
 										:sort_order';	
 	
@@ -152,6 +166,7 @@
         $dbh_pdo_statement->bindValue(':update_from', $filter->get_update_f(), \PDO::PARAM_STR);
         $dbh_pdo_statement->bindValue(':update_to', $filter->get_update_t(), \PDO::PARAM_STR);
         $dbh_pdo_statement->bindValue(':status', STATUS_SELECT::S_PUBLIC, \PDO::PARAM_INT);
+        $dbh_pdo_statement->bindValue(':fire', $filter->get_fire_type(), \PDO::PARAM_INT);
         $dbh_pdo_statement->bindValue(':sort_field', $sorting->get_sort_field(), \PDO::PARAM_INT);
         $dbh_pdo_statement->bindValue(':sort_order', $sorting->get_sort_order(), \PDO::PARAM_INT);
         
@@ -227,7 +242,7 @@
     
     <body>    
         <div id="container" class="container">            
-            <?php echo $obj_navigation_main->get_markup_nav(); ?>                                                                                
+            <?php echo $obj_navigation_main->generate_markup_nav_public(); ?>                                                                                
             <div class="page-header">
                 <h1>Campus Fire Log</h1>
                 <p>This is a list of all reported fire/drill incidents.</p>
