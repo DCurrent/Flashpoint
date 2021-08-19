@@ -131,19 +131,34 @@
 				</button>
 				
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
-					<ul class="navbar-nav mr-auto">
-						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Fire &amp; Drill Reports
-							</a>
-							<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-								<!--<a class="dropdown-item" href="#">Select an action</a>-->
-								<!--<div class="dropdown-divider"></div>-->
-								<a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/alarm_list.php">Alarm Report List</a>
-                                <a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/alarm_entry.php">Create Fire Alarm Report</a>
-							</div>
-						</li>
-					</ul>
+					
+                    
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item dropdown">
+                                
+                                <?php
+                                    if($this->access_obj->get_account())
+                                    {
+                                ?>
+                                
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Fire &amp; Drill Reports
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <!--<a class="dropdown-item" href="#">Select an action</a>-->
+                                    <!--<div class="dropdown-divider"></div>-->
+                                    <a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/alarm_list.php">Alarm Report List</a>
+                                    <a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/alarm_entry.php">Create Fire Alarm Report</a>
+                                    <a class="dropdown-item" href="<?php echo $this->directory_prime; ?>/incident_log.php">Public Fire Log</a>
+                                </div>
+                                
+                                <?php
+                                    }
+                                ?>
+                            </li>
+                        </ul>
+                    
+                    
 					<div class="float-right">
 
 						<?php
